@@ -3,90 +3,135 @@
     "dictionary": "行く",
     "teForm": "行って",
     "teHiragana": "いって",
-    "teRomaji": "itte"
+    "teRomaji": "itte",
+    "taForm": "行った",
+    "taHiragana": "いった",
+    "taRomaji": "itta"
   },
   {
     "dictionary": "食べる",
     "teForm": "食べて",
     "teHiragana": "たべて",
-    "teRomaji": "tabete"
+    "teRomaji": "tabete",
+    "taForm": "食べた",
+    "taHiragana": "たべた",
+    "taRomaji": "tabeta"
   },
   {
     "dictionary": "する",
     "teForm": "して",
     "teHiragana": "して",
-    "teRomaji": "shite"
+    "teRomaji": "shite",
+    "taForm": "した",
+    "teHiragana": "した",
+    "taRomaji": "shita"
   },
   {
     "dictionary": "来る",
     "teForm": "来て",
     "teHiragana": "きて",
-    "teRomaji": "kite"
+    "teRomaji": "kite",
+    "taForm": "来た",
+    "taHiragana": "きた",
+    "taRomaji": "kita"
   },
   {
     "dictionary": "書く",
     "teForm": "書いて",
     "teHiragana": "かいて",
-    "teRomaji": "kaite"
+    "teRomaji": "kaite",
+    "taForm": "書いた",
+    "taHiragana": "かいた",
+    "taRomaji": "kaita"
   },
   {
     "dictionary": "泳ぐ",
     "teForm": "泳いで",
     "teHiragana": "およいで",
-    "teRomaji": "oyoide"
+    "teRomaji": "oyoide",
+    "taForm": "泳いだ",
+    "taHiragana": "およいだ",
+    "taRomaji": "oyoida"
   },
   {
     "dictionary": "話す",
     "teForm": "話して",
     "teHiragana": "はなして",
-    "teRomaji": "hanashite"
+    "teRomaji": "hanashite",
+    "taForm": "話した",
+    "taHiragana": "はなした",
+    "taRomaji": "hanashita"
   },
   {
     "dictionary": "待つ",
     "teForm": "待って",
     "teHiragana": "まって",
-    "teRomaji": "matte"
+    "teRomaji": "matte",
+    "taForm": "待った",
+    "taHiragana": "まった",
+    "taRomaji": "matta"
   },
   {
     "dictionary": "読む",
     "teForm": "読んで",
     "teHiragana": "よんで",
-    "teRomaji": "yonde"
+    "teRomaji": "yonde",
+    "taForm": "読んだ",
+    "taHiragana": "よんだ",
+    "taRomaji": "yonda"
   },
   {
     "dictionary": "死ぬ",
     "teForm": "死んで",
     "teHiragana": "しんで",
-    "teRomaji": "shinde"
+    "teRomaji": "shinde",
+    "taForm": "死んだ",
+    "taHiragana": "しんだ",
+    "taRomaji": "shinda"
   },
   {
     "dictionary": "遊ぶ",
     "teForm": "遊んで",
     "teHiragana": "あそんで",
-    "teRomaji": "asonde"
+    "teRomaji": "asonde",
+    "taForm": "遊んだ",
+    "taHiragana": "あそんだ",
+    "taRomaji": "asonda"
   },
   {
     "dictionary": "飲む",
     "teForm": "飲んで",
     "teHiragana": "のんで",
-    "teRomaji": "nonde"
+    "teRomaji": "nonde",
+    "taForm": "飲んだ",
+    "taHiragana": "のんだ",
+    "taRomaji": "nonda"
   },
   {
     "dictionary": "起きる",
     "teForm": "起きて",
     "teHiragana": "おきて",
-    "teRomaji": "okite"
+    "teRomaji": "okite",
+    "taForm": "起きた",
+    "taHiragana": "おきた",
+    "taRomaji": "okita"
   },
   {
     "dictionary": "寝る",
     "teForm": "寝て",
     "teHiragana": "ねて",
-    "teRomaji": "nete"
+    "teRomaji": "nete",
+    "taForm": "寝た",
+    "taHiragana": "ねた",
+    "taRomaji": "neta"
   },
   {
     "dictionary": "勉強する",
     "teForm": "勉強して",
     "teHiragana": "べんきょうして",
-    "teRomaji": "benkyoushite"
+    "teRomaji": "benkyoushite",
+    "taForm": "勉強した",
+    "taHiragana": "べんきょうした",
+    "taRomaji": "benkyoushita"
   }
 ]
