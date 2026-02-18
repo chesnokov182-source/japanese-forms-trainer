@@ -3,18 +3,111 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Тренажёр японских глаголов</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Японский тренажёр: て-форма</title>
+    <style>
+        body {
+            font-family: 'Helvetica', 'Arial', sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .trainer {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 30px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+        .verb {
+            font-size: 3em;
+            margin: 20px 0;
+            color: #2c3e50;
+        }
+        .input-group {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+        #answerInput {
+            flex: 1;
+            padding: 12px;
+            font-size: 1.2em;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        #answerInput:focus {
+            border-color: #3498db;
+        }
+        #checkBtn {
+            padding: 12px 24px;
+            background: #3498db;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        #checkBtn:hover {
+            background: #2980b9;
+        }
+        #feedback {
+            font-weight: bold;
+            margin: 15px 0;
+            min-height: 30px;
+        }
+        .stats {
+            color: #7f8c8d;
+            font-size: 0.9em;
+            border-top: 1px solid #eee;
+            padding-top: 15px;
+            margin-top: 15px;
+        }
+        .note {
+            background: #f9f9f9;
+            border-left: 4px solid #3498db;
+            padding: 10px;
+            text-align: left;
+            font-size: 0.9em;
+            color: #555;
+            margin-top: 20px;
+        }
+    </style>
 </head>
 <body>
-  <div class="trainer">
-  <h2>て-форма тренажёр</h2>
-  <p>Глагол: <strong id="verbDisplay"></strong></p>
-  <input type="text" id="answerInput" placeholder="Введите て-форму" autocomplete="off">
-  <button id="checkBtn">Проверить</button>
-  <p id="feedback"></p>
-</div>
+    <div class="trainer">
+        <h1>🎌 て-форма тренажёр</h1>
+        <div class="subtitle">Введите て-форму глагола</div>
+        <div class="verb" id="verbDisplay">-</div>
+        <div class="input-group">
+            <input type="text" id="answerInput" placeholder="например: いって, 行って, itte" autocomplete="off">
+            <button id="checkBtn">Проверить</button>
+        </div>
+        <div id="feedback"></div>
+        <div class="stats">
+            <span>Правильных ответов: <span id="score">0</span></span>
+        </div>
+        <div class="note">
+            💡 Можно вводить ответ в любом виде: хирагана (いって), кандзи+хирагана (行って) или ромадзи (itte). Регистр ромадзи не важен.
+        </div>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
-
-
