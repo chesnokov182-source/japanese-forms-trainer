@@ -163,6 +163,32 @@
             background: #eceff1;
             border-color: #90a4ae;
         }
+        .mode-selector {
+    margin: 20px 0 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.mode-selector label {
+    font-weight: 600;
+    color: #555;
+}
+#modeSelect {
+    padding: 10px 20px;
+    font-size: 1.1rem;
+    border: 2px solid #ddd;
+    border-radius: 40px;
+    background: white;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.2s;
+}
+#modeSelect:hover,
+#modeSelect:focus {
+    border-color: #3498db;
+}   
 
         /* 📱 Мобильные устройства */
         @media (max-width: 480px) {
@@ -243,6 +269,7 @@
     <script src="script.js"></script>
 </body>
 </html>
+
 
 
 
