@@ -14,7 +14,7 @@
   <button id="checkBtn">Проверить</button>
   <p id="feedback"></p>
 </div>
-    // Массив с глаголами
+    
 const verbs = [
   { dictionary: "行く", te: "行って" },
   { dictionary: "食べる", te: "食べて" },
@@ -69,8 +69,8 @@ answerInput.addEventListener('keypress', (e) => {
   if (e.key === 'Enter') checkAnswer();
 });
 
-// Запуск
 pickRandomVerb();
 </body>
 </html>
+
 
