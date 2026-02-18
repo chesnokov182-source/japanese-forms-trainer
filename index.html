@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Японский тренажёр: て-форма</title>
+    <title>Японский тренажёр: て-форма / た-форма</title>
     <style>
         * {
             box-sizing: border-box;
@@ -38,14 +38,32 @@
             color: #666;
             font-size: 1rem;
             margin-bottom: 24px;
-                    <div class="mode-selector">
-            <label for="modeSelect">Режим:</label>
-            <select id="modeSelect">
-                <option value="te">て-форма (TE)</option>
-                <option value="ta">た-форма (TA, прошедшее время)</option>
-                <!-- Добавим позже: <option value="nai">ない-форма</option> -->
-            </select>
-        </div>
+        }
+        .mode-selector {
+            margin: 20px 0 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .mode-selector label {
+            font-weight: 600;
+            color: #555;
+        }
+        #modeSelect {
+            padding: 10px 20px;
+            font-size: 1.1rem;
+            border: 2px solid #ddd;
+            border-radius: 40px;
+            background: white;
+            cursor: pointer;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+        #modeSelect:hover,
+        #modeSelect:focus {
+            border-color: #3498db;
         }
         .verb {
             font-size: 4rem;
@@ -135,19 +153,6 @@
             padding: 6px 16px;
             border-radius: 40px;
         }
-        .note {
-            background: #f0f7ff;
-            border-radius: 16px;
-            padding: 16px;
-            text-align: left;
-            font-size: 0.95rem;
-            color: #2c3e50;
-            margin-top: 25px;
-            border-left: 4px solid #3498db;
-        }
-        .note p {
-            margin: 8px 0 0;
-        }
         .reset-btn {
             background: none;
             border: 2px solid #b0bec5;
@@ -163,32 +168,19 @@
             background: #eceff1;
             border-color: #90a4ae;
         }
-        .mode-selector {
-    margin: 20px 0 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    flex-wrap: wrap;
-}
-.mode-selector label {
-    font-weight: 600;
-    color: #555;
-}
-#modeSelect {
-    padding: 10px 20px;
-    font-size: 1.1rem;
-    border: 2px solid #ddd;
-    border-radius: 40px;
-    background: white;
-    cursor: pointer;
-    outline: none;
-    transition: border-color 0.2s;
-}
-#modeSelect:hover,
-#modeSelect:focus {
-    border-color: #3498db;
-}   
+        .note {
+            background: #f0f7ff;
+            border-radius: 16px;
+            padding: 16px;
+            text-align: left;
+            font-size: 0.95rem;
+            color: #2c3e50;
+            margin-top: 25px;
+            border-left: 4px solid #3498db;
+        }
+        .note p {
+            margin: 8px 0 0;
+        }
 
         /* 📱 Мобильные устройства */
         @media (max-width: 480px) {
@@ -241,17 +233,32 @@
 </head>
 <body>
     <div class="trainer">
-        <h1>🎌 て-форма</h1>
-        <div class="subtitle">Введите て-форму глагола</div>
+        <h1>🎌 Глагольные формы</h1>
+        <div class="subtitle">Введите форму глагола</div>
+
+        <!-- Блок переключения режимов -->
+        <div class="mode-selector">
+            <label for="modeSelect">Режим:</label>
+            <select id="modeSelect">
+                <option value="te">て-форма (TE)</option>
+                <option value="ta">た-форма (TA, прош.вр.)</option>
+                <!-- Сюда легко добавить новые формы -->
+            </select>
+        </div>
+
+        <!-- Отображение текущего глагола (словарная форма) -->
         <div class="verb" id="verbDisplay">—</div>
-        
+
+        <!-- Поле ввода и кнопка -->
         <div class="input-group">
             <input type="text" id="answerInput" placeholder="например: いって / 行って / itte" autocomplete="off" inputmode="text">
             <button id="checkBtn">Проверить</button>
         </div>
 
+        <!-- Обратная связь -->
         <div id="feedback"></div>
 
+        <!-- Статистика и управление -->
         <div class="stats">
             <div class="progress" title="Прогресс в текущем круге">
                 <div class="progress-bar" id="progressBar"></div>
@@ -260,16 +267,203 @@
             <button class="reset-btn" id="resetBtn">⟲ Сброс</button>
         </div>
 
+        <!-- Подсказка -->
         <div class="note">
             <strong>💡 Как вводить ответ</strong>
-            <p>• Хирагана: いって<br>• Кандзи + хирагана: 行って<br>• Ромадзи: itte</p>
+            <p>• Хирагана: いって / いった<br>• Кандзи + хирагана: 行って / 行った<br>• Ромадзи: itte / itta (регистр не важен)</p>
+            <p>✅ После правильного ответа сразу появится новый глагол (без повторов, пока не пройдёте все в текущем режиме).</p>
         </div>
     </div>
 
-    <script src="script.js"></script>
+    <script>
+        // === Состояние приложения ===
+        let allVerbs = [];              // все глаголы из JSON
+        const modes = ['te', 'ta'];      // доступные режимы (можно расширять)
+        let states = {};                 // { te: { queue, score }, ta: { queue, score } }
+        let currentMode = 'te';           // текущий выбранный режим
+        let currentVerb = null;           // текущий отображаемый глагол
+
+        // === DOM-элементы ===
+        const verbDisplay = document.getElementById('verbDisplay');
+        const answerInput = document.getElementById('answerInput');
+        const checkBtn = document.getElementById('checkBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const modeSelect = document.getElementById('modeSelect');
+        const feedback = document.getElementById('feedback');
+        const scoreSpan = document.getElementById('score');
+        const progressBar = document.getElementById('progressBar');
+
+        // === Вспомогательные функции ===
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Обновление прогресс-бара (сколько осталось в очереди)
+        function updateProgress() {
+            const state = states[currentMode];
+            if (!state || !allVerbs.length) return;
+            const total = allVerbs.length;
+            const remaining = state.queue.length;
+            const completed = total - remaining;
+            const percent = (completed / total) * 100;
+            progressBar.style.width = percent + '%';
+        }
+
+        // Применить состояние текущего режима к интерфейсу
+        function applyCurrentState() {
+            const state = states[currentMode];
+            if (!state) return;
+
+            // Обновить счёт
+            scoreSpan.textContent = state.score;
+
+            // Если очередь пуста — создать новую (перемешанную)
+            if (state.queue.length === 0) {
+                state.queue = shuffleArray(allVerbs);
+            }
+
+            // Установить текущий глагол (первый в очереди)
+            currentVerb = state.queue[0];
+            verbDisplay.textContent = currentVerb.dictionary;
+            answerInput.value = '';
+            feedback.textContent = '';
+            updateProgress();
+            answerInput.focus();
+        }
+
+        // === Загрузка данных из JSON ===
+        async function loadVerbs() {
+            try {
+                const response = await fetch('verbs.json');
+                if (!response.ok) throw new Error('Ошибка загрузки JSON');
+                allVerbs = await response.json();
+
+                // Инициализация состояний для каждого режима
+                modes.forEach(mode => {
+                    states[mode] = {
+                        queue: shuffleArray(allVerbs),
+                        score: 0
+                    };
+                });
+
+                // Установить режим из select (по умолчанию te)
+                currentMode = modeSelect.value;
+                applyCurrentState();
+            } catch (error) {
+                console.error('Не удалось загрузить глаголы:', error);
+                verbDisplay.textContent = 'Ошибка загрузки';
+                feedback.textContent = 'Проверьте наличие файла verbs.json';
+            }
+        }
+
+        // === Проверка ответа ===
+        function checkAnswer() {
+            const state = states[currentMode];
+            if (!state || !currentVerb) return;
+
+            const userAnswer = answerInput.value.trim();
+            if (userAnswer === '') {
+                feedback.textContent = '🔔 Введите ответ';
+                feedback.style.color = 'orange';
+                return;
+            }
+
+            // Правильные варианты в зависимости от режима
+            let correctVariants = [];
+            if (currentMode === 'te') {
+                correctVariants = [
+                    currentVerb.teForm,
+                    currentVerb.teHiragana,
+                    currentVerb.teRomaji.toLowerCase()
+                ];
+            } else if (currentMode === 'ta') {
+                correctVariants = [
+                    currentVerb.taForm,
+                    currentVerb.taHiragana,
+                    currentVerb.taRomaji.toLowerCase()
+                ];
+            }
+            // При добавлении новых режимов — добавить аналогичные блоки
+
+            const userLower = userAnswer.toLowerCase();
+            const isCorrect = correctVariants.some(variant => 
+                variant === userAnswer || variant === userLower
+            );
+
+            if (isCorrect) {
+                // Увеличить счёт
+                state.score++;
+                scoreSpan.textContent = state.score;
+
+                // Удалить текущий глагол из очереди (первый элемент)
+                state.queue.shift();
+
+                feedback.textContent = '✅ Правильно!';
+                feedback.style.color = 'green';
+
+                // Если очередь опустела — создать новую перемешанную
+                if (state.queue.length === 0) {
+                    state.queue = shuffleArray(allVerbs);
+                }
+
+                // Перейти к следующему глаголу через небольшую задержку
+                setTimeout(() => {
+                    currentVerb = state.queue[0];
+                    verbDisplay.textContent = currentVerb.dictionary;
+                    answerInput.value = '';
+                    feedback.textContent = '';
+                    updateProgress();
+                    answerInput.focus();
+                }, 500);
+            } else {
+                feedback.textContent = '❌ Неправильно. Попробуйте ещё раз.';
+                feedback.style.color = 'red';
+                answerInput.focus();
+            }
+        }
+
+        // === Сброс прогресса для текущего режима ===
+        function resetProgress() {
+            const state = states[currentMode];
+            if (!state) return;
+            if (confirm('Начать заново в этом режиме? Текущий счёт обнулится.')) {
+                state.score = 0;
+                state.queue = shuffleArray(allVerbs);
+                scoreSpan.textContent = state.score;
+                applyCurrentState();  // обновит отображение
+                feedback.textContent = '🔄 Прогресс сброшен';
+                feedback.style.color = '#3498db';
+            }
+        }
+
+        // === Смена режима ===
+        function onModeChange() {
+            currentMode = modeSelect.value;
+            // Если состояние для этого режима ещё не создано (например, добавили новый режим), создаём
+            if (!states[currentMode]) {
+                states[currentMode] = {
+                    queue: shuffleArray(allVerbs),
+                    score: 0
+                };
+            }
+            applyCurrentState();
+        }
+
+        // === Подписка на события ===
+        checkBtn.addEventListener('click', checkAnswer);
+        resetBtn.addEventListener('click', resetProgress);
+        modeSelect.addEventListener('change', onModeChange);
+        answerInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') checkAnswer();
+        });
+
+        // === Старт ===
+        loadVerbs();
+    </script>
 </body>
 </html>
-
-
-
-
