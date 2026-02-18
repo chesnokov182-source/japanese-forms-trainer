@@ -1,17 +1,19 @@
-// Массив всех глаголов (загрузится из JSON)
+// Все глаголы
 let allVerbs = [];
-// Очередь глаголов для текущего круга (перемешанная)
-let queue = [];
-// Текущий глагол
-let currentVerb = null;
-// Счётчик правильных ответов (общий)
-let score = 0;
 
-// Элементы DOM
+// Состояния для каждого режима
+const modes = ['te', 'ta']; // будем расширять
+let states = {}; // { te: { queue, score }, ta: { queue, score } }
+
+// Текущий режим
+let currentMode = 'te';
+
+// DOM элементы
 const verbDisplay = document.getElementById('verbDisplay');
 const answerInput = document.getElementById('answerInput');
 const checkBtn = document.getElementById('checkBtn');
 const resetBtn = document.getElementById('resetBtn');
+const modeSelect = document.getElementById('modeSelect');
 const feedback = document.getElementById('feedback');
 const scoreSpan = document.getElementById('score');
 const progressBar = document.getElementById('progressBar');
@@ -21,14 +23,23 @@ async function loadVerbs() {
     try {
         const response = await fetch('verbs.json');
         allVerbs = await response.json();
-        startNewRound(); // Начинаем первый круг
+        // Инициализация состояний для каждого режима
+        modes.forEach(mode => {
+            states[mode] = {
+                queue: shuffleArray(allVerbs),
+                score: 0
+            };
+        });
+        // Устанавливаем текущий режим из select (по умолчанию te)
+        currentMode = modeSelect.value;
+        applyCurrentState();
     } catch (error) {
         console.error('Ошибка загрузки глаголов:', error);
         verbDisplay.textContent = 'Ошибка загрузки';
     }
 }
 
-// Перемешивание массива (алгоритм Фишера-Йетса)
+// Перемешивание
 function shuffleArray(array) {
     const arr = [...array];
     for (let i = arr.length - 1; i > 0; i--) {
@@ -38,21 +49,18 @@ function shuffleArray(array) {
     return arr;
 }
 
-// Начать новый круг (перемешиваем все глаголы и ставим в очередь)
-function startNewRound() {
-    queue = shuffleArray(allVerbs);
-    nextVerb();
-}
-
-// Перейти к следующему глаголу
-function nextVerb() {
-    if (queue.length === 0) {
-        // Очередь пуста — начинаем новый круг
-        startNewRound();
-        return;
+// Применить состояние текущего режима к интерфейсу
+function applyCurrentState() {
+    const state = states[currentMode];
+    if (!state) return;
+    // Обновить счёт
+    scoreSpan.textContent = state.score;
+    // Обновить очередь, если пуста - пересоздать
+    if (state.queue.length === 0) {
+        state.queue = shuffleArray(allVerbs);
     }
-    // Берём первый из очереди
-    currentVerb = queue[0];
+    // Показать первый глагол из очереди
+    currentVerb = state.queue[0];
     verbDisplay.textContent = currentVerb.dictionary;
     answerInput.value = '';
     feedback.textContent = '';
@@ -60,18 +68,12 @@ function nextVerb() {
     answerInput.focus();
 }
 
-// Удалить текущий глагол из очереди (после правильного ответа)
-function removeCurrentFromQueue() {
-    if (queue.length > 0) {
-        queue.shift(); // удаляем первый элемент
-    }
-}
-
-// Обновление индикатора прогресса
+// Обновление прогресс-бара
 function updateProgress() {
-    if (!allVerbs.length) return;
+    const state = states[currentMode];
+    if (!state || !allVerbs.length) return;
     const total = allVerbs.length;
-    const remaining = queue.length;
+    const remaining = state.queue.length;
     const completed = total - remaining;
     const percent = (completed / total) * 100;
     progressBar.style.width = percent + '%';
@@ -79,7 +81,8 @@ function updateProgress() {
 
 // Проверка ответа
 function checkAnswer() {
-    if (!currentVerb) return;
+    const state = states[currentMode];
+    if (!state || !currentVerb) return;
 
     const userAnswer = answerInput.value.trim();
     if (userAnswer === '') {
@@ -88,60 +91,94 @@ function checkAnswer() {
         return;
     }
 
-    // Подготавливаем правильные варианты
-    const correctVariants = [
-        currentVerb.teForm,          // кандзи+хирагана
-        currentVerb.teHiragana,       // хирагана
-        currentVerb.teRomaji.toLowerCase() // ромадзи
-    ];
+    // Получаем правильные варианты в зависимости от режима
+    let correctVariants = [];
+    if (currentMode === 'te') {
+        correctVariants = [
+            currentVerb.teForm,
+            currentVerb.teHiragana,
+            currentVerb.teRomaji.toLowerCase()
+        ];
+    } else if (currentMode === 'ta') {
+        correctVariants = [
+            currentVerb.taForm,
+            currentVerb.taHiragana,
+            currentVerb.taRomaji.toLowerCase()
+        ];
+    }
+    // В будущем: else if (currentMode === 'nai') ...
 
     const userLower = userAnswer.toLowerCase();
-
     const isCorrect = correctVariants.some(variant => 
         variant === userAnswer || variant === userLower
     );
 
     if (isCorrect) {
-        // Увеличиваем общий счёт
-        score++;
-        scoreSpan.textContent = score;
+        // Увеличиваем счёт в текущем состоянии
+        state.score++;
+        scoreSpan.textContent = state.score;
 
-        // Удаляем пройденный глагол из очереди
-        removeCurrentFromQueue();
+        // Удаляем первый элемент из очереди (текущий глагол)
+        state.queue.shift();
 
-        // Сообщение об успехе
         feedback.textContent = '✅ Правильно!';
         feedback.style.color = 'green';
 
-        // Переходим к следующему (если очередь пуста, начнётся новый круг)
+        // Если очередь опустела, создаём новую
+        if (state.queue.length === 0) {
+            state.queue = shuffleArray(allVerbs);
+        }
+
+        // Переходим к следующему
         setTimeout(() => {
-            nextVerb();
+            currentVerb = state.queue[0];
+            verbDisplay.textContent = currentVerb.dictionary;
+            answerInput.value = '';
+            feedback.textContent = '';
+            updateProgress();
+            answerInput.focus();
         }, 500);
     } else {
-        // Неправильно
         feedback.textContent = '❌ Неправильно. Попробуйте ещё раз.';
         feedback.style.color = 'red';
         answerInput.focus();
     }
 }
 
-// Сброс прогресса (начать заново)
+// Сброс прогресса для текущего режима
 function resetProgress() {
-    if (confirm('Начать заново? Текущий счёт обнулится.')) {
-        score = 0;
-        scoreSpan.textContent = score;
-        startNewRound(); // перемешиваем и начинаем новый круг
+    const state = states[currentMode];
+    if (!state) return;
+    if (confirm('Начать заново в этом режиме? Текущий счёт обнулится.')) {
+        state.score = 0;
+        state.queue = shuffleArray(allVerbs);
+        scoreSpan.textContent = state.score;
+        applyCurrentState(); // обновит отображение
         feedback.textContent = '🔄 Прогресс сброшен';
         feedback.style.color = '#3498db';
     }
 }
 
+// Обработчик смены режима
+function onModeChange() {
+    currentMode = modeSelect.value;
+    // Если для этого режима ещё нет состояния (например, добавили новый режим), создаём
+    if (!states[currentMode]) {
+        states[currentMode] = {
+            queue: shuffleArray(allVerbs),
+            score: 0
+        };
+    }
+    applyCurrentState();
+}
+
 // События
 checkBtn.addEventListener('click', checkAnswer);
 resetBtn.addEventListener('click', resetProgress);
+modeSelect.addEventListener('change', onModeChange);
 answerInput.addEventListener('keypress', (e) => {
     if (e.key === 'Enter') checkAnswer();
 });
 
-// Запуск загрузки
+// Запуск
 loadVerbs();
