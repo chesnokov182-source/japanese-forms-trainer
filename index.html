@@ -7,10 +7,12 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <h1>Тренажёр японских глаголов</h1>
-    <p>Привет! Это простейшая версия моего будущего тренажёра.</p>
-    <p>Скоро здесь появится логика для спряжения глаголов, а пока сайт просто работает в интернете! 万歳</p>
-    <p>— <strong>しまりん</strong></p>
-    <script src="script.js"></script>
+  <div class="trainer">
+  <h2>て-форма тренажёр</h2>
+  <p>Глагол: <strong id="verbDisplay"></strong></p>
+  <input type="text" id="answerInput" placeholder="Введите て-форму" autocomplete="off">
+  <button id="checkBtn">Проверить</button>
+  <p id="feedback"></p>
+</div>
 </body>
 </html>
