@@ -2,112 +2,237 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
     <title>Японский тренажёр: て-форма</title>
     <style>
+        * {
+            box-sizing: border-box;
+        }
         body {
             font-family: 'Helvetica', 'Arial', sans-serif;
             background: #f5f5f5;
             margin: 0;
-            padding: 0;
+            padding: 16px;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            min-height: 100vh;
         }
         .trainer {
             background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-            padding: 30px;
-            max-width: 500px;
-            width: 90%;
+            border-radius: 20px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+            padding: 32px 24px;
+            max-width: 600px;
+            width: 100%;
             text-align: center;
+            transition: all 0.3s ease;
         }
         h1 {
             color: #333;
-            margin-bottom: 10px;
+            font-size: 2rem;
+            margin: 0 0 8px 0;
+            letter-spacing: -0.5px;
         }
         .subtitle {
             color: #666;
-            font-size: 0.9em;
-            margin-bottom: 20px;
+            font-size: 1rem;
+            margin-bottom: 24px;
         }
         .verb {
-            font-size: 3em;
-            margin: 20px 0;
+            font-size: 4rem;
+            margin: 20px 0 10px;
             color: #2c3e50;
+            line-height: 1.2;
+            word-break: break-word;
         }
         .input-group {
             display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
+            gap: 12px;
+            margin: 20px 0;
+            flex-wrap: wrap;
         }
         #answerInput {
             flex: 1;
-            padding: 12px;
-            font-size: 1.2em;
-            border: 2px solid #ddd;
-            border-radius: 8px;
+            min-width: 200px;
+            padding: 16px 18px;
+            font-size: 1.2rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 50px;
             outline: none;
-            transition: border-color 0.3s;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            background: #fafafa;
         }
         #answerInput:focus {
             border-color: #3498db;
+            box-shadow: 0 0 0 3px rgba(52,152,219,0.1);
+            background: white;
         }
         #checkBtn {
-            padding: 12px 24px;
+            padding: 16px 28px;
             background: #3498db;
             color: white;
             border: none;
-            border-radius: 8px;
-            font-size: 1.1em;
+            border-radius: 50px;
+            font-size: 1.2rem;
+            font-weight: 600;
             cursor: pointer;
-            transition: background 0.3s;
+            transition: background 0.2s, transform 0.1s;
+            white-space: nowrap;
+            box-shadow: 0 4px 6px rgba(52,152,219,0.2);
         }
         #checkBtn:hover {
             background: #2980b9;
+            transform: scale(1.02);
+        }
+        #checkBtn:active {
+            transform: scale(0.98);
         }
         #feedback {
-            font-weight: bold;
-            margin: 15px 0;
-            min-height: 30px;
+            font-weight: 600;
+            margin: 20px 0 15px;
+            min-height: 32px;
+            font-size: 1.2rem;
         }
         .stats {
             color: #7f8c8d;
-            font-size: 0.9em;
-            border-top: 1px solid #eee;
-            padding-top: 15px;
-            margin-top: 15px;
+            font-size: 1.1rem;
+            border-top: 2px solid #f0f0f0;
+            padding-top: 20px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .progress {
+            background: #ecf0f1;
+            border-radius: 30px;
+            height: 8px;
+            flex: 1;
+            min-width: 150px;
+        }
+        .progress-bar {
+            height: 8px;
+            background: #3498db;
+            border-radius: 30px;
+            width: 0%;
+            transition: width 0.3s;
+        }
+        .score {
+            font-weight: 700;
+            color: #2c3e50;
+            background: #f8f9fa;
+            padding: 6px 16px;
+            border-radius: 40px;
         }
         .note {
-            background: #f9f9f9;
-            border-left: 4px solid #3498db;
-            padding: 10px;
+            background: #f0f7ff;
+            border-radius: 16px;
+            padding: 16px;
             text-align: left;
-            font-size: 0.9em;
-            color: #555;
-            margin-top: 20px;
+            font-size: 0.95rem;
+            color: #2c3e50;
+            margin-top: 25px;
+            border-left: 4px solid #3498db;
+        }
+        .note p {
+            margin: 8px 0 0;
+        }
+        .reset-btn {
+            background: none;
+            border: 2px solid #b0bec5;
+            color: #546e7a;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: 600;
+        }
+        .reset-btn:hover {
+            background: #eceff1;
+            border-color: #90a4ae;
+        }
+
+        /* 📱 Мобильные устройства */
+        @media (max-width: 480px) {
+            body {
+                padding: 8px;
+            }
+            .trainer {
+                padding: 20px 16px;
+                border-radius: 16px;
+            }
+            h1 {
+                font-size: 1.8rem;
+            }
+            .verb {
+                font-size: 3rem;
+            }
+            .input-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+            #answerInput {
+                width: 100%;
+                font-size: 1.1rem;
+                padding: 14px 18px;
+            }
+            #checkBtn {
+                width: 100%;
+                padding: 14px 18px;
+                font-size: 1.2rem;
+            }
+            .stats {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .progress {
+                width: 100%;
+            }
+        }
+
+        /* 📱 Очень маленькие экраны */
+        @media (max-width: 360px) {
+            .verb {
+                font-size: 2.5rem;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
     <div class="trainer">
-        <h1>🎌 て-форма тренажёр</h1>
+        <h1>🎌 て-форма</h1>
         <div class="subtitle">Введите て-форму глагола</div>
-        <div class="verb" id="verbDisplay">-</div>
+        <div class="verb" id="verbDisplay">—</div>
+        
         <div class="input-group">
-            <input type="text" id="answerInput" placeholder="например: いって, 行って, itte" autocomplete="off">
+            <input type="text" id="answerInput" placeholder="например: いって / 行って / itte" autocomplete="off" inputmode="text">
             <button id="checkBtn">Проверить</button>
         </div>
+
         <div id="feedback"></div>
+
         <div class="stats">
-            <span>Правильных ответов: <span id="score">0</span></span>
+            <div class="progress" title="Прогресс в текущем круге">
+                <div class="progress-bar" id="progressBar"></div>
+            </div>
+            <span class="score" id="score">0</span>
+            <button class="reset-btn" id="resetBtn">⟲ Сброс</button>
         </div>
+
         <div class="note">
-            💡 Можно вводить ответ в любом виде: хирагана (いって), кандзи+хирагана (行って) или ромадзи (itte). Регистр ромадзи не важен.
+            <strong>💡 Как вводить ответ</strong>
+            <p>• Хирагана: いって<br>• Кандзи + хирагана: 行って<br>• Ромадзи: itte (регистр не важен)</p>
+            <p>✅ После правильного ответа сразу появится новый глагол (без повторов, пока не пройдёте все).</p>
         </div>
     </div>
+
     <script src="script.js"></script>
 </body>
 </html>
