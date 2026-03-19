@@ -166,10 +166,13 @@
             box-shadow: 0 0 0 3px rgba(52,152,219,0.1);
             background: white;
         }
-        #checkBtn {
-            padding: 16px 28px;
-            background: #3498db;
-            color: white;
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+        #checkBtn, #skipBtn {
+            padding: 16px 24px;
             border: none;
             border-radius: 50px;
             font-size: 1.2rem;
@@ -177,13 +180,27 @@
             cursor: pointer;
             transition: background 0.2s, transform 0.1s;
             white-space: nowrap;
+            flex: 1 1 auto;
+        }
+        #checkBtn {
+            background: #3498db;
+            color: white;
             box-shadow: 0 4px 6px rgba(52,152,219,0.2);
         }
         #checkBtn:hover {
             background: #2980b9;
             transform: scale(1.02);
         }
-        #checkBtn:active {
+        #skipBtn {
+            background: #ecf0f1;
+            color: #2c3e50;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        #skipBtn:hover {
+            background: #bdc3c7;
+            transform: scale(1.02);
+        }
+        #checkBtn:active, #skipBtn:active {
             transform: scale(0.98);
         }
         #feedback {
@@ -322,6 +339,15 @@
         }
 
         /* 📱 Мобильные устройства */
+        @media (max-width: 600px) {
+            .action-buttons {
+                flex-direction: column;
+            }
+            #checkBtn, #skipBtn {
+                width: 100%;
+            }
+        }
+
         @media (max-width: 480px) {
             body {
                 padding: 8px;
@@ -352,19 +378,10 @@
             .verb {
                 font-size: 3rem;
             }
-            .input-group {
-                flex-direction: column;
-                gap: 10px;
-            }
             #answerInput {
                 width: 100%;
                 font-size: 1.1rem;
                 padding: 14px 18px;
-            }
-            #checkBtn {
-                width: 100%;
-                padding: 14px 18px;
-                font-size: 1.2rem;
             }
             .stats {
                 flex-direction: column;
@@ -430,7 +447,12 @@
 
         <div class="input-group">
             <input type="text" id="answerInput" placeholder="например: いって / 行って / itte" autocomplete="off" inputmode="text">
+        </div>
+
+        <!-- Кнопки действий: Проверить и Пропустить -->
+        <div class="action-buttons">
             <button id="checkBtn">Проверить</button>
+            <button id="skipBtn">Пропустить</button>
         </div>
 
         <div id="feedback"></div>
@@ -481,6 +503,7 @@
         const translationDisplay = document.getElementById('translationDisplay');
         const answerInput = document.getElementById('answerInput');
         const checkBtn = document.getElementById('checkBtn');
+        const skipBtn = document.getElementById('skipBtn');
         const resetBtn = document.getElementById('resetBtn');
         const modeSelect = document.getElementById('modeSelect');
         const feedback = document.getElementById('feedback');
@@ -572,7 +595,7 @@
             answerInput.value = '';
             feedback.textContent = '';
             updateProgress();
-            updatePlaceholder(); // обновляем placeholder при смене режима или загрузке
+            updatePlaceholder();
             answerInput.focus();
         }
 
@@ -665,6 +688,29 @@
             }
         }
 
+        // === Пропуск глагола ===
+        function skipVerb() {
+            const state = states[currentMode];
+            if (!state || !currentVerb || state.queue.length === 0) return;
+
+            // Перемещаем текущий глагол в конец очереди
+            const skippedVerb = state.queue.shift();
+            state.queue.push(skippedVerb);
+
+            // Обновляем текущий глагол (первый в очереди)
+            currentVerb = state.queue[0];
+            displayCurrentVerb();
+            answerInput.value = '';
+            feedback.textContent = ''; // убираем предыдущее сообщение, если было
+            updateProgress();
+            answerInput.focus();
+
+            // Можно показать ненавязчивое сообщение (опционально)
+            // feedback.textContent = '⏭ Пропущено';
+            // feedback.style.color = '#7f8c8d';
+            // setTimeout(() => { feedback.textContent = ''; }, 500);
+        }
+
         // === Сброс прогресса ===
         function performReset() {
             const state = states[currentMode];
@@ -694,7 +740,7 @@
                     score: 0
                 };
             }
-            applyCurrentState(); // здесь вызовется updatePlaceholder()
+            applyCurrentState();
         }
 
         // === Обработчики настроек ===
@@ -720,6 +766,7 @@
         showTranslationCheck.addEventListener('change', onShowTranslationChange);
 
         checkBtn.addEventListener('click', checkAnswer);
+        skipBtn.addEventListener('click', skipVerb);
         resetBtn.addEventListener('click', openResetModal);
         modeSelect.addEventListener('change', onModeChange);
         answerInput.addEventListener('keypress', (e) => {
