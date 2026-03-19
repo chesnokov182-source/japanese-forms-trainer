@@ -22,54 +22,75 @@
             background: white;
             border-radius: 20px;
             box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-            padding: 32px 24px;
+            padding: 32px 24px 24px;
             max-width: 600px;
             width: 100%;
             text-align: center;
-            transition: all 0.3s ease;
-        }
-        .header {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            position: relative;
-            margin-bottom: 10px;
+            position: relative; /* для абсолютного позиционирования кнопки */
         }
         h1 {
             color: #333;
             font-size: 2rem;
-            margin: 0;
+            margin: 0 0 8px 0;
             letter-spacing: -0.5px;
+            padding-right: 50px; /* чтобы текст не уходил под кнопку */
         }
+        .subtitle {
+            color: #666;
+            font-size: 1rem;
+            margin-bottom: 24px;
+            padding-right: 50px;
+        }
+        /* Кнопка настроек в правом верхнем углу */
         .settings-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
             background: none;
             border: none;
             font-size: 2rem;
             cursor: pointer;
-            margin-left: 10px;
             transition: transform 0.2s;
             line-height: 1;
+            z-index: 10;
+            padding: 0;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #f8f9fa;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
         .settings-btn:hover {
             transform: rotate(30deg);
+            background: #e9ecef;
         }
+        /* Панель настроек */
         .settings-panel {
-            background: #f8f9fa;
+            position: absolute;
+            top: 70px;
+            right: 20px;
+            background: white;
             border-radius: 16px;
             padding: 16px;
-            margin: 15px 0 10px;
+            width: 280px;
+            max-width: calc(100vw - 80px);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+            border: 1px solid #e0e0e0;
+            z-index: 20;
+            display: none;
             text-align: left;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-            display: none; /* скрыто по умолчанию */
         }
         .settings-panel.visible {
             display: block;
         }
         .setting-item {
-            margin: 10px 0;
+            margin: 12px 0;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
             font-size: 1.1rem;
         }
         .setting-item input[type="checkbox"] {
@@ -241,11 +262,27 @@
                 padding: 8px;
             }
             .trainer {
-                padding: 20px 16px;
-                border-radius: 16px;
+                padding: 24px 16px 20px;
             }
             h1 {
                 font-size: 1.8rem;
+                padding-right: 45px;
+            }
+            .subtitle {
+                padding-right: 45px;
+            }
+            .settings-btn {
+                top: 15px;
+                right: 15px;
+                width: 40px;
+                height: 40px;
+                font-size: 1.8rem;
+            }
+            .settings-panel {
+                top: 60px;
+                right: 10px;
+                width: calc(100% - 20px);
+                max-width: none;
             }
             .verb {
                 font-size: 3rem;
@@ -271,9 +308,6 @@
             .progress {
                 width: 100%;
             }
-            .settings-panel {
-                margin-top: 10px;
-            }
         }
 
         @media (max-width: 360px) {
@@ -288,13 +322,10 @@
 </head>
 <body>
     <div class="trainer">
-        <div class="header">
-            <h1>🎌 Глагольные формы</h1>
-            <button class="settings-btn" id="settingsBtn" title="Настройки">⚙️</button>
-        </div>
-        <div class="subtitle">て・た・ない</div>
-
-        <!-- Панель настроек (скрыта по умолчанию) -->
+        <!-- Кнопка настроек -->
+        <button class="settings-btn" id="settingsBtn" title="Настройки">⚙️</button>
+        
+        <!-- Панель настроек -->
         <div class="settings-panel" id="settingsPanel">
             <div class="setting-item">
                 <input type="checkbox" id="showFurigana" checked>
@@ -306,6 +337,9 @@
             </div>
             <p style="font-size:0.9rem; color:#888; margin:10px 0 0;">Настройки сохраняются автоматически.</p>
         </div>
+
+        <h1>🎌 Глагольные формы</h1>
+        <div class="subtitle">て・た・ない</div>
 
         <div class="mode-selector">
             <label for="modeSelect">Режим:</label>
@@ -593,6 +627,13 @@
         // === Инициализация ===
         loadSettings();      // загружаем настройки из localStorage
         loadVerbs();         // загружаем глаголы
+
+        // Закрытие панели при клике вне её (опционально)
+        document.addEventListener('click', (e) => {
+            if (!settingsBtn.contains(e.target) && !settingsPanel.contains(e.target)) {
+                settingsPanel.classList.remove('visible');
+            }
+        });
     </script>
 </body>
 </html>
