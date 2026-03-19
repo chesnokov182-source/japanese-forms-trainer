@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Японский тренажёр: て-形 / た-形</title>
+    <title>Японский тренажёр: て-форма / た-форма / ない-форма</title>
     <style>
         * {
             box-sizing: border-box;
@@ -65,12 +65,27 @@
         #modeSelect:focus {
             border-color: #3498db;
         }
+        .verb-container {
+            margin: 20px 0 5px;
+        }
         .verb {
             font-size: 4rem;
-            margin: 20px 0 10px;
             color: #2c3e50;
             line-height: 1.2;
             word-break: break-word;
+        }
+        .furigana {
+            font-size: 1.2rem;
+            color: #7f8c8d;
+            min-height: 2rem;
+            margin-bottom: -5px;
+        }
+        .translation {
+            font-size: 1.2rem;
+            color: #3498db;
+            font-weight: 500;
+            margin-bottom: 15px;
+            min-height: 2rem;
         }
         .input-group {
             display: flex;
@@ -220,7 +235,6 @@
             }
         }
 
-        /* 📱 Очень маленькие экраны */
         @media (max-width: 360px) {
             .verb {
                 font-size: 2.5rem;
@@ -234,31 +248,32 @@
 <body>
     <div class="trainer">
         <h1>🎌 Глагольные формы</h1>
-        <div class="subtitle">Введите форму глагола</div>
+        <div class="subtitle">て・た・ない</div>
 
-        <!-- Блок переключения режимов -->
         <div class="mode-selector">
             <label for="modeSelect">Режим:</label>
             <select id="modeSelect">
-                <option value="te">て-形</option>
-                <option value="ta">た-形</option>
-                <!-- Сюда легко добавить новые формы -->
+                <option value="te">て-форма (TE)</option>
+                <option value="ta">た-форма (TA, прош.вр.)</option>
+                <option value="nai">ない-форма (NAI, отрицание)</option>
+                <!-- Добавляйте новые формы сюда -->
             </select>
         </div>
 
-        <!-- Отображение текущего глагола (словарная форма) -->
-        <div class="verb" id="verbDisplay">—</div>
+        <!-- Блок глагола с фуриганой и переводом -->
+        <div class="verb-container">
+            <div class="furigana" id="furiganaDisplay"></div>
+            <div class="verb" id="verbDisplay">—</div>
+            <div class="translation" id="translationDisplay"></div>
+        </div>
 
-        <!-- Поле ввода и кнопка -->
         <div class="input-group">
             <input type="text" id="answerInput" placeholder="например: いって / 行って / itte" autocomplete="off" inputmode="text">
             <button id="checkBtn">Проверить</button>
         </div>
 
-        <!-- Обратная связь -->
         <div id="feedback"></div>
 
-        <!-- Статистика и управление -->
         <div class="stats">
             <div class="progress" title="Прогресс в текущем круге">
                 <div class="progress-bar" id="progressBar"></div>
@@ -267,23 +282,26 @@
             <button class="reset-btn" id="resetBtn">⟲ Сброс</button>
         </div>
 
-        <!-- Подсказка -->
         <div class="note">
             <strong>💡 Как вводить ответ</strong>
-            <p>• Хирагана: いって / いった<br>• Кандзи + хирагана: 行って / 行った<br>• Ромадзи: itte / itta</p>
+            <p>• Хирагана: いって / いった / いかない<br>• Кандзи + хирагана: 行って / 行った / 行かない<br>• Ромадзи: itte / itta / ikanai (регистр не важен)</p>
+            <p>✅ После правильного ответа сразу появится новый глагол (без повторов, пока не пройдёте все в текущем режиме).</p>
+            <p>📖 Фуригана и перевод появятся, когда вы заполните их в файле verbs.json.</p>
         </div>
     </div>
 
     <script>
         // === Состояние приложения ===
-        let allVerbs = [];              // все глаголы из JSON
-        const modes = ['te', 'ta'];      // доступные режимы (можно расширять)
-        let states = {};                 // { te: { queue, score }, ta: { queue, score } }
-        let currentMode = 'te';           // текущий выбранный режим
-        let currentVerb = null;           // текущий отображаемый глагол
+        let allVerbs = [];
+        const modes = ['te', 'ta', 'nai'];
+        let states = {}; // { te: { queue, score }, ta: { queue, score }, nai: { queue, score } }
+        let currentMode = 'te';
+        let currentVerb = null;
 
         // === DOM-элементы ===
         const verbDisplay = document.getElementById('verbDisplay');
+        const furiganaDisplay = document.getElementById('furiganaDisplay');
+        const translationDisplay = document.getElementById('translationDisplay');
         const answerInput = document.getElementById('answerInput');
         const checkBtn = document.getElementById('checkBtn');
         const resetBtn = document.getElementById('resetBtn');
@@ -302,7 +320,6 @@
             return arr;
         }
 
-        // Обновление прогресс-бара (сколько осталось в очереди)
         function updateProgress() {
             const state = states[currentMode];
             if (!state || !allVerbs.length) return;
@@ -313,36 +330,39 @@
             progressBar.style.width = percent + '%';
         }
 
-        // Применить состояние текущего режима к интерфейсу
+        // Показать текущий глагол с фуриганой и переводом
+        function displayCurrentVerb() {
+            if (!currentVerb) return;
+            verbDisplay.textContent = currentVerb.dictionary;
+            furiganaDisplay.textContent = currentVerb.furigana || '';
+            translationDisplay.textContent = currentVerb.translation || '';
+        }
+
         function applyCurrentState() {
             const state = states[currentMode];
             if (!state) return;
 
-            // Обновить счёт
             scoreSpan.textContent = state.score;
 
-            // Если очередь пуста — создать новую (перемешанную)
             if (state.queue.length === 0) {
                 state.queue = shuffleArray(allVerbs);
             }
 
-            // Установить текущий глагол (первый в очереди)
             currentVerb = state.queue[0];
-            verbDisplay.textContent = currentVerb.dictionary;
+            displayCurrentVerb();
             answerInput.value = '';
             feedback.textContent = '';
             updateProgress();
             answerInput.focus();
         }
 
-        // === Загрузка данных из JSON ===
+        // === Загрузка данных ===
         async function loadVerbs() {
             try {
                 const response = await fetch('verbs.json');
                 if (!response.ok) throw new Error('Ошибка загрузки JSON');
                 allVerbs = await response.json();
 
-                // Инициализация состояний для каждого режима
                 modes.forEach(mode => {
                     states[mode] = {
                         queue: shuffleArray(allVerbs),
@@ -350,7 +370,6 @@
                     };
                 });
 
-                // Установить режим из select (по умолчанию te)
                 currentMode = modeSelect.value;
                 applyCurrentState();
             } catch (error) {
@@ -372,7 +391,6 @@
                 return;
             }
 
-            // Правильные варианты в зависимости от режима
             let correctVariants = [];
             if (currentMode === 'te') {
                 correctVariants = [
@@ -386,8 +404,13 @@
                     currentVerb.taHiragana,
                     currentVerb.taRomaji.toLowerCase()
                 ];
+            } else if (currentMode === 'nai') {
+                correctVariants = [
+                    currentVerb.naiForm,
+                    currentVerb.naiHiragana,
+                    currentVerb.naiRomaji.toLowerCase()
+                ];
             }
-            // При добавлении новых режимов — добавить аналогичные блоки
 
             const userLower = userAnswer.toLowerCase();
             const isCorrect = correctVariants.some(variant => 
@@ -395,25 +418,21 @@
             );
 
             if (isCorrect) {
-                // Увеличить счёт
                 state.score++;
                 scoreSpan.textContent = state.score;
 
-                // Удалить текущий глагол из очереди (первый элемент)
                 state.queue.shift();
 
                 feedback.textContent = '✅ Правильно!';
                 feedback.style.color = 'green';
 
-                // Если очередь опустела — создать новую перемешанную
                 if (state.queue.length === 0) {
                     state.queue = shuffleArray(allVerbs);
                 }
 
-                // Перейти к следующему глаголу через небольшую задержку
                 setTimeout(() => {
                     currentVerb = state.queue[0];
-                    verbDisplay.textContent = currentVerb.dictionary;
+                    displayCurrentVerb();
                     answerInput.value = '';
                     feedback.textContent = '';
                     updateProgress();
@@ -426,7 +445,7 @@
             }
         }
 
-        // === Сброс прогресса для текущего режима ===
+        // === Сброс прогресса ===
         function resetProgress() {
             const state = states[currentMode];
             if (!state) return;
@@ -434,7 +453,7 @@
                 state.score = 0;
                 state.queue = shuffleArray(allVerbs);
                 scoreSpan.textContent = state.score;
-                applyCurrentState();  // обновит отображение
+                applyCurrentState();
                 feedback.textContent = '🔄 Прогресс сброшен';
                 feedback.style.color = '#3498db';
             }
@@ -443,7 +462,6 @@
         // === Смена режима ===
         function onModeChange() {
             currentMode = modeSelect.value;
-            // Если состояние для этого режима ещё не создано (например, добавили новый режим), создаём
             if (!states[currentMode]) {
                 states[currentMode] = {
                     queue: shuffleArray(allVerbs),
@@ -453,7 +471,7 @@
             applyCurrentState();
         }
 
-        // === Подписка на события ===
+        // === События ===
         checkBtn.addEventListener('click', checkAnswer);
         resetBtn.addEventListener('click', resetProgress);
         modeSelect.addEventListener('change', onModeChange);
@@ -466,4 +484,3 @@
     </script>
 </body>
 </html>
-
