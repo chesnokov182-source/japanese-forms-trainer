@@ -256,6 +256,73 @@
             margin: 8px 0 0;
         }
 
+        /* Модальное окно сброса */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.2s, visibility 0.2s;
+        }
+        .modal-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        .modal {
+            background: white;
+            border-radius: 24px;
+            padding: 28px 24px;
+            max-width: 360px;
+            width: 90%;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            text-align: center;
+        }
+        .modal p {
+            font-size: 1.2rem;
+            color: #2c3e50;
+            margin: 0 0 24px 0;
+            line-height: 1.5;
+        }
+        .modal-buttons {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        .modal-btn {
+            flex: 1;
+            padding: 14px 0;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+        }
+        .modal-btn-yes {
+            background: #e74c3c;
+            color: white;
+        }
+        .modal-btn-yes:hover {
+            background: #c0392b;
+            transform: scale(1.02);
+        }
+        .modal-btn-no {
+            background: #ecf0f1;
+            color: #2c3e50;
+        }
+        .modal-btn-no:hover {
+            background: #bdc3c7;
+            transform: scale(1.02);
+        }
+
         /* 📱 Мобильные устройства */
         @media (max-width: 480px) {
             body {
@@ -307,6 +374,12 @@
             }
             .progress {
                 width: 100%;
+            }
+            .modal {
+                padding: 20px 16px;
+            }
+            .modal p {
+                font-size: 1.1rem;
             }
         }
 
@@ -380,6 +453,17 @@
         </div>
     </div>
 
+    <!-- Модальное окно сброса прогресса -->
+    <div class="modal-overlay" id="resetModalOverlay">
+        <div class="modal">
+            <p>Начать заново в этом режиме?<br>Текущий счёт обнулится.</p>
+            <div class="modal-buttons">
+                <button class="modal-btn modal-btn-yes" id="modalYesBtn">Да</button>
+                <button class="modal-btn modal-btn-no" id="modalNoBtn">Нет</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // === Состояние приложения ===
         let allVerbs = [];
@@ -409,6 +493,11 @@
         const settingsPanel = document.getElementById('settingsPanel');
         const showFuriganaCheck = document.getElementById('showFurigana');
         const showTranslationCheck = document.getElementById('showTranslation');
+
+        // Элементы модального окна
+        const modalOverlay = document.getElementById('resetModalOverlay');
+        const modalYesBtn = document.getElementById('modalYesBtn');
+        const modalNoBtn = document.getElementById('modalNoBtn');
 
         // === Работа с настройками ===
         function loadSettings() {
@@ -569,18 +658,25 @@
             }
         }
 
-        // === Сброс прогресса ===
-        function resetProgress() {
+        // === Сброс прогресса (реальная функция) ===
+        function performReset() {
             const state = states[currentMode];
             if (!state) return;
-            if (confirm('Начать заново в этом режиме? Текущий счёт обнулится.')) {
-                state.score = 0;
-                state.queue = shuffleArray(allVerbs);
-                scoreSpan.textContent = state.score;
-                applyCurrentState();
-                feedback.textContent = '🔄 Прогресс сброшен';
-                feedback.style.color = '#3498db';
-            }
+            state.score = 0;
+            state.queue = shuffleArray(allVerbs);
+            scoreSpan.textContent = state.score;
+            applyCurrentState();
+            feedback.textContent = '🔄 Прогресс сброшен';
+            feedback.style.color = '#3498db';
+        }
+
+        // === Открытие модального окна сброса ===
+        function openResetModal() {
+            modalOverlay.classList.add('visible');
+        }
+
+        function closeResetModal() {
+            modalOverlay.classList.remove('visible');
         }
 
         // === Смена режима ===
@@ -618,17 +714,31 @@
         showTranslationCheck.addEventListener('change', onShowTranslationChange);
 
         checkBtn.addEventListener('click', checkAnswer);
-        resetBtn.addEventListener('click', resetProgress);
+        resetBtn.addEventListener('click', openResetModal);
         modeSelect.addEventListener('change', onModeChange);
         answerInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') checkAnswer();
+        });
+
+        // Модальное окно: кнопки
+        modalYesBtn.addEventListener('click', () => {
+            performReset();
+            closeResetModal();
+        });
+        modalNoBtn.addEventListener('click', closeResetModal);
+
+        // Закрытие по клику на overlay
+        modalOverlay.addEventListener('click', (e) => {
+            if (e.target === modalOverlay) {
+                closeResetModal();
+            }
         });
 
         // === Инициализация ===
         loadSettings();      // загружаем настройки из localStorage
         loadVerbs();         // загружаем глаголы
 
-        // Закрытие панели при клике вне её (опционально)
+        // Закрытие панели настроек при клике вне её
         document.addEventListener('click', (e) => {
             if (!settingsBtn.contains(e.target) && !settingsPanel.contains(e.target)) {
                 settingsPanel.classList.remove('visible');
