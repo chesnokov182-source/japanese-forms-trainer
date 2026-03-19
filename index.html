@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
-    <title>Японский тренажёр: て-форма / た-форма / ない-форма</title>
+    <title>Японский тренажёр: формы глаголов</title>
     <style>
         * {
             box-sizing: border-box;
@@ -28,16 +28,54 @@
             text-align: center;
             transition: all 0.3s ease;
         }
+        .header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            margin-bottom: 10px;
+        }
         h1 {
             color: #333;
             font-size: 2rem;
-            margin: 0 0 8px 0;
+            margin: 0;
             letter-spacing: -0.5px;
         }
-        .subtitle {
-            color: #666;
-            font-size: 1rem;
-            margin-bottom: 24px;
+        .settings-btn {
+            background: none;
+            border: none;
+            font-size: 2rem;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: transform 0.2s;
+            line-height: 1;
+        }
+        .settings-btn:hover {
+            transform: rotate(30deg);
+        }
+        .settings-panel {
+            background: #f8f9fa;
+            border-radius: 16px;
+            padding: 16px;
+            margin: 15px 0 10px;
+            text-align: left;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            display: none; /* скрыто по умолчанию */
+        }
+        .settings-panel.visible {
+            display: block;
+        }
+        .setting-item {
+            margin: 10px 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+        .setting-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
         }
         .mode-selector {
             margin: 20px 0 10px;
@@ -233,6 +271,9 @@
             .progress {
                 width: 100%;
             }
+            .settings-panel {
+                margin-top: 10px;
+            }
         }
 
         @media (max-width: 360px) {
@@ -247,8 +288,24 @@
 </head>
 <body>
     <div class="trainer">
-        <h1>🎌 Глагольные формы</h1>
+        <div class="header">
+            <h1>🎌 Глагольные формы</h1>
+            <button class="settings-btn" id="settingsBtn" title="Настройки">⚙️</button>
+        </div>
         <div class="subtitle">て・た・ない</div>
+
+        <!-- Панель настроек (скрыта по умолчанию) -->
+        <div class="settings-panel" id="settingsPanel">
+            <div class="setting-item">
+                <input type="checkbox" id="showFurigana" checked>
+                <label for="showFurigana">Показывать фуригану (чтение)</label>
+            </div>
+            <div class="setting-item">
+                <input type="checkbox" id="showTranslation" checked>
+                <label for="showTranslation">Показывать перевод</label>
+            </div>
+            <p style="font-size:0.9rem; color:#888; margin:10px 0 0;">Настройки сохраняются автоматически.</p>
+        </div>
 
         <div class="mode-selector">
             <label for="modeSelect">Режим:</label>
@@ -256,7 +313,6 @@
                 <option value="te">て-форма (TE)</option>
                 <option value="ta">た-форма (TA, прош.вр.)</option>
                 <option value="nai">ない-форма (NAI, отрицание)</option>
-                <!-- Добавляйте новые формы сюда -->
             </select>
         </div>
 
@@ -286,7 +342,7 @@
             <strong>💡 Как вводить ответ</strong>
             <p>• Хирагана: いって / いった / いかない<br>• Кандзи + хирагана: 行って / 行った / 行かない<br>• Ромадзи: itte / itta / ikanai (регистр не важен)</p>
             <p>✅ После правильного ответа сразу появится новый глагол (без повторов, пока не пройдёте все в текущем режиме).</p>
-            <p>📖 Фуригана и перевод появятся, когда вы заполните их в файле verbs.json.</p>
+            <p>⚙️ Нажмите на шестерёнку, чтобы скрыть фуригану или перевод.</p>
         </div>
     </div>
 
@@ -297,6 +353,12 @@
         let states = {}; // { te: { queue, score }, ta: { queue, score }, nai: { queue, score } }
         let currentMode = 'te';
         let currentVerb = null;
+
+        // Настройки отображения
+        let settings = {
+            showFurigana: true,
+            showTranslation: true
+        };
 
         // === DOM-элементы ===
         const verbDisplay = document.getElementById('verbDisplay');
@@ -309,6 +371,36 @@
         const feedback = document.getElementById('feedback');
         const scoreSpan = document.getElementById('score');
         const progressBar = document.getElementById('progressBar');
+        const settingsBtn = document.getElementById('settingsBtn');
+        const settingsPanel = document.getElementById('settingsPanel');
+        const showFuriganaCheck = document.getElementById('showFurigana');
+        const showTranslationCheck = document.getElementById('showTranslation');
+
+        // === Работа с настройками ===
+        function loadSettings() {
+            const saved = localStorage.getItem('trainerSettings');
+            if (saved) {
+                try {
+                    const parsed = JSON.parse(saved);
+                    settings = { ...settings, ...parsed };
+                } catch (e) {
+                    console.warn('Ошибка загрузки настроек', e);
+                }
+            }
+            showFuriganaCheck.checked = settings.showFurigana;
+            showTranslationCheck.checked = settings.showTranslation;
+        }
+
+        function saveSettings() {
+            localStorage.setItem('trainerSettings', JSON.stringify(settings));
+        }
+
+        // Обновить отображение фуриганы/перевода согласно настройкам
+        function updateDisplayForCurrentVerb() {
+            if (!currentVerb) return;
+            furiganaDisplay.textContent = (settings.showFurigana && currentVerb.furigana) ? currentVerb.furigana : '';
+            translationDisplay.textContent = (settings.showTranslation && currentVerb.translation) ? currentVerb.translation : '';
+        }
 
         // === Вспомогательные функции ===
         function shuffleArray(array) {
@@ -330,12 +422,10 @@
             progressBar.style.width = percent + '%';
         }
 
-        // Показать текущий глагол с фуриганой и переводом
         function displayCurrentVerb() {
             if (!currentVerb) return;
             verbDisplay.textContent = currentVerb.dictionary;
-            furiganaDisplay.textContent = currentVerb.furigana || '';
-            translationDisplay.textContent = currentVerb.translation || '';
+            updateDisplayForCurrentVerb();
         }
 
         function applyCurrentState() {
@@ -471,7 +561,28 @@
             applyCurrentState();
         }
 
+        // === Обработчики настроек ===
+        function toggleSettingsPanel() {
+            settingsPanel.classList.toggle('visible');
+        }
+
+        function onShowFuriganaChange() {
+            settings.showFurigana = showFuriganaCheck.checked;
+            saveSettings();
+            updateDisplayForCurrentVerb();
+        }
+
+        function onShowTranslationChange() {
+            settings.showTranslation = showTranslationCheck.checked;
+            saveSettings();
+            updateDisplayForCurrentVerb();
+        }
+
         // === События ===
+        settingsBtn.addEventListener('click', toggleSettingsPanel);
+        showFuriganaCheck.addEventListener('change', onShowFuriganaChange);
+        showTranslationCheck.addEventListener('change', onShowTranslationChange);
+
         checkBtn.addEventListener('click', checkAnswer);
         resetBtn.addEventListener('click', resetProgress);
         modeSelect.addEventListener('change', onModeChange);
@@ -479,8 +590,9 @@
             if (e.key === 'Enter') checkAnswer();
         });
 
-        // === Старт ===
-        loadVerbs();
+        // === Инициализация ===
+        loadSettings();      // загружаем настройки из localStorage
+        loadVerbs();         // загружаем глаголы
     </script>
 </body>
 </html>
