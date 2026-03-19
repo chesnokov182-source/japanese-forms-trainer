@@ -26,14 +26,14 @@
             max-width: 600px;
             width: 100%;
             text-align: center;
-            position: relative; /* для абсолютного позиционирования кнопки */
+            position: relative;
         }
         h1 {
             color: #333;
             font-size: 2rem;
             margin: 0 0 8px 0;
             letter-spacing: -0.5px;
-            padding-right: 50px; /* чтобы текст не уходил под кнопку */
+            padding-right: 50px;
         }
         .subtitle {
             color: #666;
@@ -41,7 +41,6 @@
             margin-bottom: 24px;
             padding-right: 50px;
         }
-        /* Кнопка настроек в правом верхнем углу */
         .settings-btn {
             position: absolute;
             top: 20px;
@@ -67,7 +66,6 @@
             transform: rotate(30deg);
             background: #e9ecef;
         }
-        /* Панель настроек */
         .settings-panel {
             position: absolute;
             top: 70px;
@@ -445,11 +443,10 @@
             <button class="reset-btn" id="resetBtn">⟲ Сброс</button>
         </div>
 
+        <!-- Краткая подсказка (без деталей) -->
         <div class="note">
-            <strong>💡 Как вводить ответ</strong>
-            <p>• Хирагана: いって / いった / いかない<br>• Кандзи + хирагана: 行って / 行った / 行かない<br>• Ромадзи: itte / itta / ikanai (регистр не важен)</p>
-            <p>✅ После правильного ответа сразу появится новый глагол (без повторов, пока не пройдёте все в текущем режиме).</p>
-            <p>⚙️ Нажмите на шестерёнку, чтобы скрыть фуригану или перевод.</p>
+            <strong>💡 Подсказка</strong>
+            <p>Можно вводить хираганой, кандзи+хирагана или ромадзи (регистр не важен).<br>Подсказка в поле ввода меняется в зависимости от режима.</p>
         </div>
     </div>
 
@@ -468,7 +465,7 @@
         // === Состояние приложения ===
         let allVerbs = [];
         const modes = ['te', 'ta', 'nai'];
-        let states = {}; // { te: { queue, score }, ta: { queue, score }, nai: { queue, score } }
+        let states = {};
         let currentMode = 'te';
         let currentVerb = null;
 
@@ -494,7 +491,7 @@
         const showFuriganaCheck = document.getElementById('showFurigana');
         const showTranslationCheck = document.getElementById('showTranslation');
 
-        // Элементы модального окна
+        // Модальное окно
         const modalOverlay = document.getElementById('resetModalOverlay');
         const modalYesBtn = document.getElementById('modalYesBtn');
         const modalNoBtn = document.getElementById('modalNoBtn');
@@ -518,11 +515,20 @@
             localStorage.setItem('trainerSettings', JSON.stringify(settings));
         }
 
-        // Обновить отображение фуриганы/перевода согласно настройкам
         function updateDisplayForCurrentVerb() {
             if (!currentVerb) return;
             furiganaDisplay.textContent = (settings.showFurigana && currentVerb.furigana) ? currentVerb.furigana : '';
             translationDisplay.textContent = (settings.showTranslation && currentVerb.translation) ? currentVerb.translation : '';
+        }
+
+        // === Функция обновления placeholder в зависимости от режима ===
+        function updatePlaceholder() {
+            const placeholders = {
+                te: "например: いって / 行って / itte",
+                ta: "например: いった / 行った / itta",
+                nai: "например: いかない / 行かない / ikanai"
+            };
+            answerInput.placeholder = placeholders[currentMode] || placeholders.te;
         }
 
         // === Вспомогательные функции ===
@@ -566,6 +572,7 @@
             answerInput.value = '';
             feedback.textContent = '';
             updateProgress();
+            updatePlaceholder(); // обновляем placeholder при смене режима или загрузке
             answerInput.focus();
         }
 
@@ -658,7 +665,7 @@
             }
         }
 
-        // === Сброс прогресса (реальная функция) ===
+        // === Сброс прогресса ===
         function performReset() {
             const state = states[currentMode];
             if (!state) return;
@@ -670,7 +677,6 @@
             feedback.style.color = '#3498db';
         }
 
-        // === Открытие модального окна сброса ===
         function openResetModal() {
             modalOverlay.classList.add('visible');
         }
@@ -688,7 +694,7 @@
                     score: 0
                 };
             }
-            applyCurrentState();
+            applyCurrentState(); // здесь вызовется updatePlaceholder()
         }
 
         // === Обработчики настроек ===
@@ -720,30 +726,27 @@
             if (e.key === 'Enter') checkAnswer();
         });
 
-        // Модальное окно: кнопки
         modalYesBtn.addEventListener('click', () => {
             performReset();
             closeResetModal();
         });
         modalNoBtn.addEventListener('click', closeResetModal);
 
-        // Закрытие по клику на overlay
         modalOverlay.addEventListener('click', (e) => {
             if (e.target === modalOverlay) {
                 closeResetModal();
             }
         });
 
-        // === Инициализация ===
-        loadSettings();      // загружаем настройки из localStorage
-        loadVerbs();         // загружаем глаголы
-
-        // Закрытие панели настроек при клике вне её
         document.addEventListener('click', (e) => {
             if (!settingsBtn.contains(e.target) && !settingsPanel.contains(e.target)) {
                 settingsPanel.classList.remove('visible');
             }
         });
+
+        // === Инициализация ===
+        loadSettings();
+        loadVerbs();
     </script>
 </body>
 </html>
