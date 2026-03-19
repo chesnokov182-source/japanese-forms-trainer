@@ -338,7 +338,7 @@
             transform: scale(1.02);
         }
 
-        /* 📱 Мобильные устройства */
+        /* 📱 Мобильные устройства — улучшенная адаптация перевода */
         @media (max-width: 600px) {
             .action-buttons {
                 flex-direction: column;
@@ -383,6 +383,12 @@
                 font-size: 1.1rem;
                 padding: 14px 18px;
             }
+            .translation {
+                font-size: 1rem;          /* Уменьшаем шрифт перевода */
+                word-break: break-word;    /* Разрешаем перенос длинных слов */
+                line-height: 1.4;           /* Улучшаем читаемость */
+                padding: 0 5px;             /* Небольшие отступы */
+            }
             .stats {
                 flex-direction: column;
                 align-items: stretch;
@@ -404,6 +410,9 @@
             }
             h1 {
                 font-size: 1.5rem;
+            }
+            .translation {
+                font-size: 0.9rem;          /* Ещё меньше для совсем узких экранов */
             }
         }
     </style>
@@ -704,11 +713,6 @@
             feedback.textContent = ''; // убираем предыдущее сообщение, если было
             updateProgress();
             answerInput.focus();
-
-            // Можно показать ненавязчивое сообщение (опционально)
-            // feedback.textContent = '⏭ Пропущено';
-            // feedback.style.color = '#7f8c8d';
-            // setTimeout(() => { feedback.textContent = ''; }, 500);
         }
 
         // === Сброс прогресса ===
