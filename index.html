@@ -96,6 +96,35 @@
             height: 20px;
             cursor: pointer;
         }
+        .group-selector {
+            margin-top: 15px;
+            padding-top: 10px;
+            border-top: 1px solid #e0e0e0;
+        }
+        .group-selector h4 {
+            margin: 0 0 8px 0;
+            font-size: 1rem;
+            color: #555;
+        }
+        .group-buttons {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+        .group-buttons label {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.95rem;
+            background: #f8f9fa;
+            padding: 6px 12px;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+        .group-buttons label:hover {
+            background: #e9ecef;
+        }
         .mode-selector {
             margin: 20px 0 10px;
             display: flex;
@@ -384,10 +413,10 @@
                 padding: 14px 18px;
             }
             .translation {
-                font-size: 1rem;          /* Уменьшаем шрифт перевода */
-                word-break: break-word;    /* Разрешаем перенос длинных слов */
-                line-height: 1.4;           /* Улучшаем читаемость */
-                padding: 0 5px;             /* Небольшие отступы */
+                font-size: 1rem;
+                word-break: break-word;
+                line-height: 1.4;
+                padding: 0 5px;
             }
             .stats {
                 flex-direction: column;
@@ -412,7 +441,7 @@
                 font-size: 1.5rem;
             }
             .translation {
-                font-size: 0.9rem;          /* Ещё меньше для совсем узких экранов */
+                font-size: 0.9rem;
             }
         }
     </style>
@@ -431,6 +460,21 @@
             <div class="setting-item">
                 <input type="checkbox" id="showTranslation" checked>
                 <label for="showTranslation">Показывать перевод</label>
+            </div>
+            <div class="group-selector">
+                <h4>Группы глаголов:</h4>
+                <div class="group-buttons">
+                    <label>
+                        <input type="checkbox" id="groupI" value="I" checked> I (1 спряжение)
+                    </label>
+                    <label>
+                        <input type="checkbox" id="groupII" value="II" checked> II (2 спряжение)
+                    </label>
+                    <label>
+                        <input type="checkbox" id="groupIII" value="III" checked> III (3 спряжение)
+                    </label>
+                </div>
+                <p style="font-size:0.8rem; color:#888; margin:8px 0 0;">Выберите группы для тренировки. При изменении прогресс сбрасывается.</p>
             </div>
             <p style="font-size:0.9rem; color:#888; margin:10px 0 0;">Настройки сохраняются автоматически.</p>
         </div>
@@ -494,16 +538,18 @@
 
     <script>
         // === Состояние приложения ===
-        let allVerbs = [];
+        let allVerbs = [];          // полный список из JSON
+        let filteredVerbs = [];     // список после фильтрации по группам
         const modes = ['te', 'ta', 'nai'];
-        let states = {};
+        let states = {};            // состояния для каждого режима
         let currentMode = 'te';
         let currentVerb = null;
 
         // Настройки отображения
         let settings = {
             showFurigana: true,
-            showTranslation: true
+            showTranslation: true,
+            groups: { I: true, II: true, III: true }
         };
 
         // === DOM-элементы ===
@@ -522,6 +568,9 @@
         const settingsPanel = document.getElementById('settingsPanel');
         const showFuriganaCheck = document.getElementById('showFurigana');
         const showTranslationCheck = document.getElementById('showTranslation');
+        const groupICheck = document.getElementById('groupI');
+        const groupIICheck = document.getElementById('groupII');
+        const groupIIICheck = document.getElementById('groupIII');
 
         // Модальное окно
         const modalOverlay = document.getElementById('resetModalOverlay');
@@ -541,6 +590,9 @@
             }
             showFuriganaCheck.checked = settings.showFurigana;
             showTranslationCheck.checked = settings.showTranslation;
+            groupICheck.checked = settings.groups.I;
+            groupIICheck.checked = settings.groups.II;
+            groupIIICheck.checked = settings.groups.III;
         }
 
         function saveSettings() {
@@ -553,7 +605,6 @@
             translationDisplay.textContent = (settings.showTranslation && currentVerb.translation) ? currentVerb.translation : '';
         }
 
-        // === Функция обновления placeholder в зависимости от режима ===
         function updatePlaceholder() {
             const placeholders = {
                 te: "например: いって / 行って / itte",
@@ -561,6 +612,53 @@
                 nai: "например: いかない / 行かない / ikanai"
             };
             answerInput.placeholder = placeholders[currentMode] || placeholders.te;
+        }
+
+        // === Фильтрация глаголов по выбранным группам ===
+        function getFilteredVerbs() {
+            const activeGroups = [];
+            if (settings.groups.I) activeGroups.push('I');
+            if (settings.groups.II) activeGroups.push('II');
+            if (settings.groups.III) activeGroups.push('III');
+            // Если ни одна группа не выбрана, возвращаем пустой массив (ничего не тренируем)
+            if (activeGroups.length === 0) return [];
+            return allVerbs.filter(verb => activeGroups.includes(verb.type));
+        }
+
+        function updateFilteredVerbs() {
+            filteredVerbs = getFilteredVerbs();
+        }
+
+        // === Сброс всех состояний (прогресса) ===
+        function resetAllProgress() {
+            modes.forEach(mode => {
+                if (states[mode]) {
+                    states[mode].score = 0;
+                    states[mode].queue = shuffleArray(filteredVerbs);
+                } else {
+                    states[mode] = {
+                        queue: shuffleArray(filteredVerbs),
+                        score: 0
+                    };
+                }
+            });
+            // Обновляем интерфейс для текущего режима
+            applyCurrentState();
+        }
+
+        // === При изменении групп вызываем перестроение ===
+        function onGroupsChange() {
+            // Сохраняем выбор
+            settings.groups = {
+                I: groupICheck.checked,
+                II: groupIICheck.checked,
+                III: groupIIICheck.checked
+            };
+            saveSettings();
+            // Обновляем отфильтрованный список
+            updateFilteredVerbs();
+            // Сбрасываем прогресс для всех режимов
+            resetAllProgress();
         }
 
         // === Вспомогательные функции ===
@@ -575,8 +673,8 @@
 
         function updateProgress() {
             const state = states[currentMode];
-            if (!state || !allVerbs.length) return;
-            const total = allVerbs.length;
+            if (!state || !filteredVerbs.length) return;
+            const total = filteredVerbs.length;
             const remaining = state.queue.length;
             const completed = total - remaining;
             const percent = (completed / total) * 100;
@@ -595,8 +693,22 @@
 
             scoreSpan.textContent = state.score;
 
+            if (state.queue.length === 0 && filteredVerbs.length > 0) {
+                state.queue = shuffleArray(filteredVerbs);
+            }
             if (state.queue.length === 0) {
-                state.queue = shuffleArray(allVerbs);
+                // Если нет глаголов (все группы отключены), показываем сообщение
+                verbDisplay.textContent = '—';
+                furiganaDisplay.textContent = '';
+                translationDisplay.textContent = 'Выберите хотя бы одну группу';
+                answerInput.disabled = true;
+                checkBtn.disabled = true;
+                skipBtn.disabled = true;
+                return;
+            } else {
+                answerInput.disabled = false;
+                checkBtn.disabled = false;
+                skipBtn.disabled = false;
             }
 
             currentVerb = state.queue[0];
@@ -615,9 +727,17 @@
                 if (!response.ok) throw new Error('Ошибка загрузки JSON');
                 allVerbs = await response.json();
 
+                // Убедимся, что у каждого глагола есть поле type, если нет — установим I
+                allVerbs = allVerbs.map(verb => {
+                    if (!verb.type) verb.type = 'I';
+                    return verb;
+                });
+
+                updateFilteredVerbs();
+
                 modes.forEach(mode => {
                     states[mode] = {
-                        queue: shuffleArray(allVerbs),
+                        queue: shuffleArray(filteredVerbs),
                         score: 0
                     };
                 });
@@ -635,6 +755,12 @@
         function checkAnswer() {
             const state = states[currentMode];
             if (!state || !currentVerb) return;
+
+            if (filteredVerbs.length === 0) {
+                feedback.textContent = 'Сначала выберите хотя бы одну группу глаголов';
+                feedback.style.color = 'orange';
+                return;
+            }
 
             const userAnswer = answerInput.value.trim();
             if (userAnswer === '') {
@@ -678,11 +804,22 @@
                 feedback.textContent = '✅ Правильно!';
                 feedback.style.color = 'green';
 
-                if (state.queue.length === 0) {
-                    state.queue = shuffleArray(allVerbs);
+                if (state.queue.length === 0 && filteredVerbs.length > 0) {
+                    state.queue = shuffleArray(filteredVerbs);
                 }
 
                 setTimeout(() => {
+                    if (state.queue.length === 0) {
+                        // Если нет глаголов, показать сообщение
+                        currentVerb = null;
+                        verbDisplay.textContent = '—';
+                        furiganaDisplay.textContent = '';
+                        translationDisplay.textContent = 'Выберите хотя бы одну группу';
+                        answerInput.value = '';
+                        feedback.textContent = '';
+                        updateProgress();
+                        return;
+                    }
                     currentVerb = state.queue[0];
                     displayCurrentVerb();
                     answerInput.value = '';
@@ -702,6 +839,12 @@
             const state = states[currentMode];
             if (!state || !currentVerb || state.queue.length === 0) return;
 
+            if (filteredVerbs.length === 0) {
+                feedback.textContent = 'Сначала выберите хотя бы одну группу глаголов';
+                feedback.style.color = 'orange';
+                return;
+            }
+
             // Перемещаем текущий глагол в конец очереди
             const skippedVerb = state.queue.shift();
             state.queue.push(skippedVerb);
@@ -710,7 +853,7 @@
             currentVerb = state.queue[0];
             displayCurrentVerb();
             answerInput.value = '';
-            feedback.textContent = ''; // убираем предыдущее сообщение, если было
+            feedback.textContent = '';
             updateProgress();
             answerInput.focus();
         }
@@ -720,7 +863,7 @@
             const state = states[currentMode];
             if (!state) return;
             state.score = 0;
-            state.queue = shuffleArray(allVerbs);
+            state.queue = shuffleArray(filteredVerbs);
             scoreSpan.textContent = state.score;
             applyCurrentState();
             feedback.textContent = '🔄 Прогресс сброшен';
@@ -740,7 +883,7 @@
             currentMode = modeSelect.value;
             if (!states[currentMode]) {
                 states[currentMode] = {
-                    queue: shuffleArray(allVerbs),
+                    queue: shuffleArray(filteredVerbs),
                     score: 0
                 };
             }
@@ -768,6 +911,9 @@
         settingsBtn.addEventListener('click', toggleSettingsPanel);
         showFuriganaCheck.addEventListener('change', onShowFuriganaChange);
         showTranslationCheck.addEventListener('change', onShowTranslationChange);
+        groupICheck.addEventListener('change', onGroupsChange);
+        groupIICheck.addEventListener('change', onGroupsChange);
+        groupIIICheck.addEventListener('change', onGroupsChange);
 
         checkBtn.addEventListener('click', checkAnswer);
         skipBtn.addEventListener('click', skipVerb);
