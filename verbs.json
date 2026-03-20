@@ -1089,7 +1089,8 @@
     "taRomaji": "aketa",
     "naiForm": "開けない",
     "naiHiragana": "あけない",
-    "naiRomaji": "akenai"
+    "naiRomaji": "akenai",
+    "type": "II"
   },
   {
     "dictionary": "あげる",
@@ -1103,7 +1104,8 @@
     "taRomaji": "ageta",
     "naiForm": "あげない",
     "naiHiragana": "あげない",
-    "naiRomaji": "agenai"
+    "naiRomaji": "agenai",
+    "type": "II"
   },
   {
     "dictionary": "集める",
@@ -1117,7 +1119,8 @@
     "taRomaji": "atsumeta",
     "naiForm": "集めない",
     "naiHiragana": "あつめない",
-    "naiRomaji": "atsumenai"
+    "naiRomaji": "atsumenai",
+    "type": "II"
   },
   {
     "dictionary": "浴びる",
@@ -1131,7 +1134,8 @@
     "taRomaji": "abita",
     "naiForm": "浴びない",
     "naiHiragana": "あびない",
-    "naiRomaji": "abinai"
+    "naiRomaji": "abinai",
+    "type": "II"
   },
   {
     "dictionary": "います",
@@ -1145,7 +1149,8 @@
     "taRomaji": "ita",
     "naiForm": "いない",
     "naiHiragana": "いない",
-    "naiRomaji": "inai"
+    "naiRomaji": "inai",
+    "type": "II"
   },
   {
     "dictionary": "入れる",
@@ -1159,7 +1164,8 @@
     "taRomaji": "ireta",
     "naiForm": "入れない",
     "naiHiragana": "いれない",
-    "naiRomaji": "irenai"
+    "naiRomaji": "irenai",
+    "type": "II"
   },
   {
     "dictionary": "生まれる",
@@ -1173,7 +1179,8 @@
     "taRomaji": "umareta",
     "naiForm": "生まれない",
     "naiHiragana": "うまれない",
-    "naiRomaji": "umarenai"
+    "naiRomaji": "umarenai",
+    "type": "II"
   },
   {
     "dictionary": "起きる",
@@ -1187,7 +1194,8 @@
     "taRomaji": "okita",
     "naiForm": "起きない",
     "naiHiragana": "おきない",
-    "naiRomaji": "okinai"
+    "naiRomaji": "okinai",
+    "type": "II"
   },
   {
     "dictionary": "教える",
@@ -1201,7 +1209,8 @@
     "taRomaji": "oshieta",
     "naiForm": "教えない",
     "naiHiragana": "おしえない",
-    "naiRomaji": "おしえない"
+    "naiRomaji": "おしえない",
+    "type": "II"
   },
   {
     "dictionary": "覚える",
@@ -1215,7 +1224,8 @@
     "taRomaji": "oboeta",
     "naiForm": "覚えない",
     "naiHiragana": "おぼえない",
-    "naiRomaji": "oboenai"
+    "naiRomaji": "oboenai",
+    "type": "II"
   },
   {
     "dictionary": "降りる",
@@ -1229,7 +1239,8 @@
     "taRomaji": "orita",
     "naiForm": "降りない",
     "naiHiragana": "おりない",
-    "naiRomaji": "orinai"
+    "naiRomaji": "orinai",
+    "type": "II"
   },
   {
     "dictionary": "換える",
@@ -1243,7 +1254,8 @@
     "taRomaji": "kaeta",
     "naiForm": "換えない",
     "naiHiragana": "かえない",
-    "naiRomaji": "kaenai"
+    "naiRomaji": "kaenai",
+    "type": "II"
   },
   {
     "dictionary": "変える",
@@ -1257,7 +1269,8 @@
     "taRomaji": "kaeta",
     "naiForm": "変えない",
     "naiHiragana": "かえない",
-    "naiRomaji": "kaenai"
+    "naiRomaji": "kaenai",
+    "type": "II"
   },
   {
     "dictionary": "かける",
@@ -1271,7 +1284,8 @@
     "taRomaji": "kaketa",
     "naiForm": "かけない",
     "naiHiragana": "かけない",
-    "naiRomaji": "kakenai"
+    "naiRomaji": "kakenai",
+    "type": "II"
   },
   {
     "dictionary": "借りる",
@@ -1285,7 +1299,8 @@
     "taRomaji": "karita",
     "naiForm": "借りない",
     "naiHiragana": "かりない",
-    "naiRomaji": "karinai"
+    "naiRomaji": "karinai",
+    "type": "II"
   },
   {
     "dictionary": "考える",
@@ -1299,7 +1314,8 @@
     "taRomaji": "kangaeta",
     "naiForm": "考えない",
     "naiHiragana": "かんがえない",
-    "naiRomaji": "kangaenai"
+    "naiRomaji": "kangaenai",
+    "type": "II"
   },
   {
     "dictionary": "着る",
@@ -1313,7 +1329,8 @@
     "taRomaji": "kita",
     "naiForm": "着ない",
     "naiHiragana": "きない",
-    "naiRomaji": "kinai"
+    "naiRomaji": "kinai",
+    "type": "II"
   },
   {
     "dictionary": "気を付ける",
@@ -1327,7 +1344,8 @@
     "taRomaji": "kiwotsuketa",
     "naiForm": "気を付けない",
     "naiHiragana": "きをつけない",
-    "naiRomaji": "kiwotsukenai"
+    "naiRomaji": "kiwotsukenai",
+    "type": "II"
   },
   {
     "dictionary": "くれる",
@@ -1341,7 +1359,8 @@
     "taRomaji": "kureta",
     "naiForm": "くれない",
     "naiHiragana": "くれない",
-    "naiRomaji": "kurenai"
+    "naiRomaji": "kurenai",
+    "type": "II"
   },
   {
     "dictionary": "閉める",
@@ -1355,7 +1374,8 @@
     "taRomaji": "shimeta",
     "naiForm": "閉めない",
     "naiHiragana": "しめない",
-    "naiRomaji": "shimenai"
+    "naiRomaji": "shimenai",
+    "type": "II"
   },
   {
     "dictionary": "調べる",
@@ -1369,7 +1389,8 @@
     "taRomaji": "shirabeta",
     "naiForm": "調べない",
     "naiHiragana": "しらべない",
-    "naiRomaji": "shirabenai"
+    "naiRomaji": "shirabenai",
+    "type": "II"
   },
   {
     "dictionary": "捨てる",
@@ -1383,7 +1404,8 @@
     "taRomaji": "suteta",
     "naiForm": "捨てない",
     "naiHiragana": "すてない",
-    "naiRomaji": "sutenai"
+    "naiRomaji": "sutenai",
+    "type": "II"
   },
   {
     "dictionary": "食べる",
@@ -1397,7 +1419,8 @@
     "taRomaji": "tabeta",
     "naiForm": "食べない",
     "naiHiragana": "たべない",
-    "naiRomaji": "tabenai"
+    "naiRomaji": "tabenai",
+    "type": "II"
   },
   {
     "dictionary": "足りる",
@@ -1411,7 +1434,8 @@
     "taRomaji": "tarita",
     "naiForm": "足りない",
     "naiHiragana": "たりない",
-    "naiRomaji": "tarinai"
+    "naiRomaji": "tarinai",
+    "type": "II"
   },
   {
     "dictionary": "疲れる",
@@ -1425,7 +1449,8 @@
     "taRomaji": "tsukareta",
     "naiForm": "疲れない",
     "naiHiragana": "つかれない",
-    "naiRomaji": "tsukarenai"
+    "naiRomaji": "tsukarenai",
+    "type": "II"
   },
   {
     "dictionary": "つける",
@@ -1439,7 +1464,8 @@
     "taRomaji": "tsuketa",
     "naiForm": "つけない",
     "naiHiragana": "つけない",
-    "naiRomaji": "tsukenai"
+    "naiRomaji": "tsukenai",
+    "type": "II"
   },
   {
     "dictionary": "出かける",
@@ -1453,7 +1479,8 @@
     "taRomaji": "dekaketa",
     "naiForm": "出かけない",
     "naiHiragana": "でかけない",
-    "naiRomaji": "dekakenai"
+    "naiRomaji": "dekakenai",
+    "type": "II"
   },
   {
     "dictionary": "出来る",
@@ -1467,7 +1494,8 @@
     "taRomaji": "dekita",
     "naiForm": "出来ない",
     "naiHiragana": "できない",
-    "naiRomaji": "dekinai"
+    "naiRomaji": "dekinai",
+    "type": "II"
   },
   {
     "dictionary": "出る",
@@ -1481,7 +1509,8 @@
     "taRomaji": "deta",
     "naiForm": "出ない",
     "naiHiragana": "でない",
-    "naiRomaji": "denai"
+    "naiRomaji": "denai",
+    "type": "II"
   },
   {
     "dictionary": "止める",
@@ -1495,7 +1524,8 @@
     "taRomaji": "tometa",
     "naiForm": "止めない",
     "naiHiragana": "とめない",
-    "naiRomaji": "tomenai"
+    "naiRomaji": "tomenai",
+    "type": "II"
   },
   {
     "dictionary": "寝る",
@@ -1509,7 +1539,8 @@
     "taRomaji": "neta",
     "naiForm": "寝ない",
     "naiHiragana": "ねない",
-    "naiRomaji": "nenai"
+    "naiRomaji": "nenai",
+    "type": "II"
   },
   {
     "dictionary": "乗り換える",
@@ -1523,7 +1554,8 @@
     "taRomaji": "norikaeta",
     "naiForm": "乗り換えない",
     "naiHiragana": "のりかえない",
-    "naiRomaji": "norikaenai"
+    "naiRomaji": "norikaenai",
+    "type": "II"
   },
   {
     "dictionary": "始める",
@@ -1537,7 +1569,8 @@
     "taRomaji": "hajimeta",
     "naiForm": "始めない",
     "naiHiragana": "はじめない",
-    "naiRomaji": "hajimenai"
+    "naiRomaji": "hajimenai",
+    "type": "II"
   },
   {
     "dictionary": "負ける",
@@ -1551,7 +1584,8 @@
     "taRomaji": "maketa",
     "naiForm": "負けない",
     "naiHiragana": "まけない",
-    "naiRomaji": "makenai"
+    "naiRomaji": "makenai",
+    "type": "II"
   },
   {
     "dictionary": "見せる",
@@ -1565,7 +1599,8 @@
     "taRomaji": "miseta",
     "naiForm": "見せない",
     "naiHiragana": "みせない",
-    "naiRomaji": "misenai"
+    "naiRomaji": "misenai",
+    "type": "II"
   },
   {
     "dictionary": "見る",
@@ -1579,7 +1614,8 @@
     "taRomaji": "mita",
     "naiForm": "見ない",
     "naiHiragana": "みない",
-    "naiRomaji": "minai"
+    "naiRomaji": "minai",
+    "type": "II"
   },
   {
     "dictionary": "迎える",
@@ -1593,7 +1629,8 @@
     "taRomaji": "mukaeta",
     "naiForm": "迎えない",
     "naiHiragana": "むかえない",
-    "naiRomaji": "mukaenai"
+    "naiRomaji": "mukaenai",
+    "type": "II"
   },
   {
     "dictionary": "やめる",
@@ -1607,7 +1644,8 @@
     "taRomaji": "yameta",
     "naiForm": "やめない",
     "naiHiragana": "やめない",
-    "naiRomaji": "yamenai"
+    "naiRomaji": "yamenai",
+    "type": "II"
   },
   {
     "dictionary": "忘れる",
@@ -1621,7 +1659,8 @@
     "taRomaji": "わすれた",
     "naiForm": "忘れない",
     "naiHiragana": "わすれない",
-    "naiRomaji": "wasurenai"
+    "naiRomaji": "wasurenai",
+    "type": "II"
   },
   {
     "dictionary": "案内する",
@@ -1635,7 +1674,8 @@
     "taRomaji": "annaishita",
     "naiForm": "案内しない",
     "naiHiragana": "あんないしない",
-    "naiRomaji": "annaishinai"
+    "naiRomaji": "annaishinai",
+    "type": "III"
   },
   {
     "dictionary": "運転する",
@@ -1649,7 +1689,8 @@
     "taRomaji": "untenshita",
     "naiForm": "運転しない",
     "naiHiragana": "うんてんしない",
-    "naiRomaji": "untenshinai"
+    "naiRomaji": "untenshinai",
+    "type": "III"
   },
   {
     "dictionary": "買い物する",
@@ -1663,7 +1704,8 @@
     "taRomaji": "kaimonoshita",
     "naiForm": "買い物しない",
     "naiHiragana": "かいものしない",
-    "naiRomaji": "kaimonoshinai"
+    "naiRomaji": "kaimonoshinai",
+    "type": "III"
   },
   {
     "dictionary": "来る",
@@ -1677,7 +1719,8 @@
     "taRomaji": "kita",
     "naiForm": "来ない",
     "naiHiragana": "こない",
-    "naiRomaji": "konai"
+    "naiRomaji": "konai",
+    "type": "III"
   },
   {
     "dictionary": "結婚する",
@@ -1691,7 +1734,8 @@
     "taRomaji": "kekkonshita",
     "naiForm": "結婚しない",
     "naiHiragana": "けっこんしない",
-    "naiRomaji": "kekkonshinai"
+    "naiRomaji": "kekkonshinai",
+    "type": "III"
   },
   {
     "dictionary": "見学する",
@@ -1705,7 +1749,8 @@
     "taRomaji": "kengakushita",
     "naiForm": "見学しない",
     "naiHiragana": "けんがくしない",
-    "naiRomaji": "kengakushinai"
+    "naiRomaji": "kengakushinai",
+    "type": "III"
   },
   {
     "dictionary": "研究する",
@@ -1719,7 +1764,8 @@
     "taRomaji": "kenkyuushita",
     "naiForm": "研究しない",
     "naiHiragana": "けんきゅうしない",
-    "naiRomaji": "kenkyuushinai"
+    "naiRomaji": "kenkyuushinai",
+    "type": "III"
   },
   {
     "dictionary": "コピーする",
@@ -1733,7 +1779,8 @@
     "taRomaji": "kopi-shita",
     "naiForm": "コピーしない",
     "naiHiragana": "コピーしない",
-    "naiRomaji": "kopi-shinai"
+    "naiRomaji": "kopi-shinai",
+    "type": "III"
   },
   {
     "dictionary": "散歩する",
@@ -1747,7 +1794,8 @@
     "taRomaji": "sanposhita",
     "naiForm": "散歩しない",
     "naiHiragana": "さんぽしない",
-    "naiRomaji": "sanposhinai"
+    "naiRomaji": "sanposhinai",
+    "type": "III"
   },
   {
     "dictionary": "残業する",
@@ -1761,7 +1809,8 @@
     "taRomaji": "zangyoushita",
     "naiForm": "残業しない",
     "naiHiragana": "ざんぎょうしない",
-    "naiRomaji": "zangyoushinai"
+    "naiRomaji": "zangyoushinai",
+    "type": "III"
   },
   {
     "dictionary": "する",
@@ -1775,7 +1824,8 @@
     "taRomaji": "shita",
     "naiForm": "しない",
     "naiHiragana": "しない",
-    "naiRomaji": "shinai"
+    "naiRomaji": "shinai",
+    "type": "III"
   },
   {
     "dictionary": "修理する",
@@ -1789,7 +1839,8 @@
     "taRomaji": "shuurishita",
     "naiForm": "修理しない",
     "naiHiragana": "しゅうりしない",
-    "naiRomaji": "shuurishinai"
+    "naiRomaji": "shuurishinai",
+    "type": "III"
   },
   {
     "dictionary": "出張する",
@@ -1803,7 +1854,8 @@
     "taRomaji": "shucchoushita",
     "naiForm": "出張しない",
     "naiHiragana": "しゅっちょうしない",
-    "naiRomaji": "shucchoushinai"
+    "naiRomaji": "shucchoushinai",
+    "type": "III"
   },
   {
     "dictionary": "紹介する",
@@ -1817,7 +1869,8 @@
     "taRomaji": "shoukaishita",
     "naiForm": "紹介しない",
     "naiHiragana": "しょうかいしない",
-    "naiRomaji": "shoukaishinai"
+    "naiRomaji": "shoukaishinai",
+    "type": "III"
   },
   {
     "dictionary": "食事する",
@@ -1831,7 +1884,8 @@
     "taRomaji": "shokujishita",
     "naiForm": "食事しない",
     "naiHiragana": "しょくじしない",
-    "naiRomaji": "shokujishinai"
+    "naiRomaji": "shokujishinai",
+    "type": "III"
   },
   {
     "dictionary": "心配する",
@@ -1845,7 +1899,8 @@
     "taRomaji": "shinpaishita",
     "naiForm": "心配しない",
     "naiHiragana": "しんぱいしない",
-    "naiRomaji": "shinpaishinai"
+    "naiRomaji": "shinpaishinai",
+    "type": "III"
   },
   {
     "dictionary": "説明する",
@@ -1859,7 +1914,8 @@
     "taRomaji": "setsumeishita",
     "naiForm": "説明しない",
     "naiHiragana": "せつめいしない",
-    "naiRomaji": "setsumeishinai"
+    "naiRomaji": "setsumeishinai",
+    "type": "III"
   },
   {
     "dictionary": "洗濯する",
@@ -1873,7 +1929,8 @@
     "taRomaji": "sentakushita",
     "naiForm": "洗濯しない",
     "naiHiragana": "せんたくしない",
-    "naiRomaji": "sentakushinai"
+    "naiRomaji": "sentakushinai",
+    "type": "III"
   },
   {
     "dictionary": "掃除する",
@@ -1887,7 +1944,8 @@
     "taRomaji": "soujishita",
     "naiForm": "掃除しない",
     "naiHiragana": "そうじしない",
-    "naiRomaji": "soujishinai"
+    "naiRomaji": "soujishinai",
+    "type": "III"
   },
    {
     "dictionary": "連れて来る",
@@ -1901,7 +1959,8 @@
     "taRomaji": "tsuretekita",
     "naiForm": "連れて来ない",
     "naiHiragana": "つれてこない",
-    "naiRomaji": "tsuretekonai"
+    "naiRomaji": "tsuretekonai",
+    "type": "III"
   },
   {
     "dictionary": "電話する",
@@ -1915,7 +1974,8 @@
     "taRomaji": "denwashita",
     "naiForm": "電話しない",
     "naiHiragana": "でんわしない",
-    "naiRomaji": "denwashinai"
+    "naiRomaji": "denwashinai",
+    "type": "III"
   },
   {
     "dictionary": "勉強する",
@@ -1929,7 +1989,8 @@
     "taRomaji": "benkyoushita",
     "naiForm": "勉強しない",
     "naiHiragana": "べんきょうしない",
-    "naiRomaji": "benkyoushinai"
+    "naiRomaji": "benkyoushinai",
+    "type": "III"
   },
   {
     "dictionary": "持って来る",
@@ -1943,7 +2004,8 @@
     "taRomaji": "mottekita",
     "naiForm": "持って来ない",
     "naiHiragana": "もってこない",
-    "naiRomaji": "もってこない"
+    "naiRomaji": "もってこない",
+    "type": "III"
   },
   {
     "dictionary": "予約する",
@@ -1957,7 +2019,8 @@
     "taRomaji": "yoyakushita",
     "naiForm": "予約しない",
     "naiHiragana": "よやくしない",
-    "naiRomaji": "yoyakushinai"
+    "naiRomaji": "yoyakushinai",
+    "type": "III"
   },
   {
     "dictionary": "留学する",
@@ -1971,6 +2034,7 @@
     "taRomaji": "ryuugakushita",
     "naiForm": "留学しない",
     "naiHiragana": "りゅうがくしない",
-    "naiRomaji": "ryuugakushinai"
+    "naiRomaji": "ryuugakushinai",
+    "type": "III"
   }
 ]
