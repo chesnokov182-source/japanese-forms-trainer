@@ -33,13 +33,12 @@
             font-size: 2rem;
             margin: 0 0 8px 0;
             letter-spacing: -0.5px;
-            padding-right: 50px;
+            /* убираем padding-right, так как кнопка настроек абсолютно позиционирована */
         }
         .subtitle {
             color: #666;
             font-size: 1rem;
             margin-bottom: 24px;
-            padding-right: 50px;
         }
         .settings-btn {
             position: absolute;
@@ -367,7 +366,7 @@
             transform: scale(1.02);
         }
 
-        /* 📱 Мобильные устройства — улучшенная адаптация перевода */
+        /* 📱 Мобильные устройства — улучшенная адаптация */
         @media (max-width: 600px) {
             .action-buttons {
                 flex-direction: column;
@@ -385,11 +384,15 @@
                 padding: 24px 16px 20px;
             }
             h1 {
-                font-size: 1.8rem;
-                padding-right: 45px;
+                font-size: 1.6rem;         /* уменьшенный размер */
+                white-space: nowrap;       /* запрещаем перенос */
+                overflow-x: auto;          /* при необходимости скролл, но обычно не понадобится */
+                max-width: calc(100% - 40px); /* чтобы не налезало на кнопку */
+                margin-right: 40px;         /* отступ для кнопки */
             }
             .subtitle {
-                padding-right: 45px;
+                font-size: 0.9rem;
+                margin-bottom: 20px;
             }
             .settings-btn {
                 top: 15px;
@@ -438,7 +441,7 @@
                 font-size: 2.5rem;
             }
             h1 {
-                font-size: 1.5rem;
+                font-size: 1.4rem;
             }
             .translation {
                 font-size: 0.9rem;
@@ -479,7 +482,7 @@
             <p style="font-size:0.9rem; color:#888; margin:10px 0 0;">Настройки сохраняются автоматически.</p>
         </div>
 
-        <h1>🎌 Глагольные формы</h1>
+        <h1>Глагольные формы</h1>
         <div class="subtitle">て・た・ない</div>
 
         <div class="mode-selector">
@@ -538,10 +541,10 @@
 
     <script>
         // === Состояние приложения ===
-        let allVerbs = [];          // полный список из JSON
-        let filteredVerbs = [];     // список после фильтрации по группам
+        let allVerbs = [];
+        let filteredVerbs = [];
         const modes = ['te', 'ta', 'nai'];
-        let states = {};            // состояния для каждого режима
+        let states = {};
         let currentMode = 'te';
         let currentVerb = null;
 
@@ -620,7 +623,6 @@
             if (settings.groups.I) activeGroups.push('I');
             if (settings.groups.II) activeGroups.push('II');
             if (settings.groups.III) activeGroups.push('III');
-            // Если ни одна группа не выбрана, возвращаем пустой массив (ничего не тренируем)
             if (activeGroups.length === 0) return [];
             return allVerbs.filter(verb => activeGroups.includes(verb.type));
         }
@@ -629,7 +631,6 @@
             filteredVerbs = getFilteredVerbs();
         }
 
-        // === Сброс всех состояний (прогресса) ===
         function resetAllProgress() {
             modes.forEach(mode => {
                 if (states[mode]) {
@@ -642,22 +643,17 @@
                     };
                 }
             });
-            // Обновляем интерфейс для текущего режима
             applyCurrentState();
         }
 
-        // === При изменении групп вызываем перестроение ===
         function onGroupsChange() {
-            // Сохраняем выбор
             settings.groups = {
                 I: groupICheck.checked,
                 II: groupIICheck.checked,
                 III: groupIIICheck.checked
             };
             saveSettings();
-            // Обновляем отфильтрованный список
             updateFilteredVerbs();
-            // Сбрасываем прогресс для всех режимов
             resetAllProgress();
         }
 
@@ -697,7 +693,6 @@
                 state.queue = shuffleArray(filteredVerbs);
             }
             if (state.queue.length === 0) {
-                // Если нет глаголов (все группы отключены), показываем сообщение
                 verbDisplay.textContent = '—';
                 furiganaDisplay.textContent = '';
                 translationDisplay.textContent = 'Выберите хотя бы одну группу';
@@ -726,13 +721,10 @@
                 const response = await fetch('verbs.json');
                 if (!response.ok) throw new Error('Ошибка загрузки JSON');
                 allVerbs = await response.json();
-
-                // Убедимся, что у каждого глагола есть поле type, если нет — установим I
                 allVerbs = allVerbs.map(verb => {
                     if (!verb.type) verb.type = 'I';
                     return verb;
                 });
-
                 updateFilteredVerbs();
 
                 modes.forEach(mode => {
@@ -755,7 +747,6 @@
         function checkAnswer() {
             const state = states[currentMode];
             if (!state || !currentVerb) return;
-
             if (filteredVerbs.length === 0) {
                 feedback.textContent = 'Сначала выберите хотя бы одну группу глаголов';
                 feedback.style.color = 'orange';
@@ -810,7 +801,6 @@
 
                 setTimeout(() => {
                     if (state.queue.length === 0) {
-                        // Если нет глаголов, показать сообщение
                         currentVerb = null;
                         verbDisplay.textContent = '—';
                         furiganaDisplay.textContent = '';
@@ -838,18 +828,15 @@
         function skipVerb() {
             const state = states[currentMode];
             if (!state || !currentVerb || state.queue.length === 0) return;
-
             if (filteredVerbs.length === 0) {
                 feedback.textContent = 'Сначала выберите хотя бы одну группу глаголов';
                 feedback.style.color = 'orange';
                 return;
             }
 
-            // Перемещаем текущий глагол в конец очереди
             const skippedVerb = state.queue.shift();
             state.queue.push(skippedVerb);
 
-            // Обновляем текущий глагол (первый в очереди)
             currentVerb = state.queue[0];
             displayCurrentVerb();
             answerInput.value = '';
